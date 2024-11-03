@@ -1,39 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { Board, BoardStatus } from './board.model';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { BoardStatus } from './board-status.enum';
 import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BoardRepository } from './board.repository';
+import { Board } from './board.entity';
 
 
-// 게시물에 관한 로직을 처리하는곳 Service -> Controller(에서 서비스를 불러와 사용)
+// 게시물에 관한 로직을 처리하는곳 Service -> Controller(에서 서비스를 불러와 사용), DB관련 로직은 Repository에서 처리.
 @Injectable()
 export class BoardsService {
-    private boards: Board[] = [];
+    constructor(
+        // @InjectRepository : 이 데코레이터를 이용해서 이 서비스에서 BoardRepository를 이용, 이걸 boardRepository 변수에 넣어줌
+        @InjectRepository(BoardRepository)
+        private boardRepository: BoardRepository,
+    ){}
 
-
-    getAllBoards(): Board[] {
-        return this.boards;
+    createBoard(createBoardDto : CreateBoardDto): Promise<Board>{
+        return this.boardRepository.createBoard(createBoardDto);
     }
 
-    createBoard(createBoardDto: CreateBoardDto){
-        const {title, description} = createBoardDto;
-        const board: Board = {
-            id: uuid(),
-            title,
-            description,
-            status: BoardStatus.PUBLIC
+    async deleteBoard(id: number): Promise<void>{
+        const result = await this.boardRepository.delete(id);
+        
+        if(result.affected === 0){
+            throw new NotFoundException(`게시글 ID를 찾을 수 없습니다 ${id}`)
         }
 
-        this.boards.push(board);
-        return board;
+        console.log("deleteBoard : ", result)
+
     }
 
-    getBoardById(id: string): Board{
-        return this.boards.find((board) => board.id === id)
+    async getBoardById(id: number): Promise <Board> {
+        // const found = await this.boardRepository.findOne(id); // 원본
+        const found = await this.boardRepository.findOneBy({id: id});
+
+        if(!found){
+            throw new NotFoundException(`해당 아이디를 찾을 수 없습니다. ${id}`)
+        }
+        return found;
     }
 
-    deleteBoard(id: string): void{
-        this.boards = this.boards.filter((board)=> board.id !== id);
-    }
 
 }
 
