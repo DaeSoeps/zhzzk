@@ -1,5 +1,5 @@
 import { ArgumentMetadata, BadRequestException, PipeTransform } from "@nestjs/common";
-import { BoardStatus } from "../board.model";
+import { BoardStatus } from "../board-status.enum";
 
 // 게시판에 대한 커스텀 파이프
 export class BoardStatusValidationPipe implements PipeTransform {
