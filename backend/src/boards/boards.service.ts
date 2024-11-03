@@ -7,7 +7,7 @@ import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
 
 
-// 게시물에 관한 로직을 처리하는곳 Service -> Controller(에서 서비스를 불러와 사용)
+// 게시물에 관한 로직을 처리하는곳 Service -> Controller(에서 서비스를 불러와 사용), DB관련 로직은 Repository에서 처리.
 @Injectable()
 export class BoardsService {
     constructor(
@@ -16,7 +16,22 @@ export class BoardsService {
         private boardRepository: BoardRepository,
     ){}
 
-    async getBoardByid(id: number): Promise <Board> {
+    createBoard(createBoardDto : CreateBoardDto): Promise<Board>{
+        return this.boardRepository.createBoard(createBoardDto);
+    }
+
+    async deleteBoard(id: number): Promise<void>{
+        const result = await this.boardRepository.delete(id);
+        
+        if(result.affected === 0){
+            throw new NotFoundException(`게시글 ID를 찾을 수 없습니다 ${id}`)
+        }
+
+        console.log("deleteBoard : ", result)
+
+    }
+
+    async getBoardById(id: number): Promise <Board> {
         // const found = await this.boardRepository.findOne(id); // 원본
         const found = await this.boardRepository.findOneBy({id: id});
 
@@ -25,42 +40,7 @@ export class BoardsService {
         }
         return found;
     }
-    // getAllBoards(): Board[] {
-    //     return this.boards;
-    // }
 
-    // createBoard(createBoardDto: CreateBoardDto){
-    //     const {title, description} = createBoardDto;
-    //     const board: Board = {
-    //         id: uuid(),
-    //         title,
-    //         description,
-    //         status: BoardStatus.PUBLIC
-    //     }
-
-    //     this.boards.push(board);
-    //     return board;
-    // }
-
-    // getBoardById(id: string): Board{
-    //     const found = this.boards.find((board) => board.id === id);
-    //     if(!found){
-    //         throw new NotFoundException(`해당 아이디를 찾을 수 없습니다. ${id}`);
-    //     }
-
-    //     return found;
-    // }
-
-    // deleteBoard(id: string): void{
-    //     const found = this.getBoardById(id);
-    //     this.boards = this.boards.filter((board)=> board.id !== found.id);
-    // }
-
-    // updateBoardStatus(id: string, status: BoardStatus): Board {
-    //     const board = this.getBoardById(id);
-    //     board.status = status;
-    //     return board;
-    // }
 
 }
 

@@ -1,4 +1,4 @@
-import { ArgumentMetadata, BadRequestException, PipeTransform } from "@nestjs/common";
+import { BadRequestException, PipeTransform } from "@nestjs/common";
 import { BoardStatus } from "../board-status.enum";
 
 // 게시판에 대한 커스텀 파이프
@@ -16,11 +16,11 @@ export class BoardStatusValidationPipe implements PipeTransform {
      * @returns transform()메소드에서 Return 된 값은 Route 헨들러로 전해짐.
      * 만약 예외(Exception) 발생하면 클라이언트에 바로 전해짐.
      */
-    transform(value: any, metadata: ArgumentMetadata) {
+    transform(value: any) {
         value = value.toUpperCase();
         
         if(!this.isStatusValid(value)){
-            throw BadRequestException(`${value} 는 status 값이 아닙니다.`)
+            throw new BadRequestException(`${value} 는 status 값이 아닙니다.`)
         }
         return value;
     }
