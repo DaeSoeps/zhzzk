@@ -7,6 +7,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
        <Link href="/login">login</Link>
+       <Link href="/main">main</Link>
       </main>
       <footer className={styles.footer}>
         <a
