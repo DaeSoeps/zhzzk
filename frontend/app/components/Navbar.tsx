@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Search, Bell, User } from 'lucide-react';
+"use client";
 
-const Navbar: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+import { Search, Bell, User } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+
+export default function Navbar() {
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <nav className="bg-[#1A1A1A] h-14 flex items-center px-4 justify-between sticky top-0 z-50">
@@ -39,6 +41,4 @@ const Navbar: React.FC = () => {
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
