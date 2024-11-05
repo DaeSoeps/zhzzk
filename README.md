@@ -1,8 +1,17 @@
-# zhzzk
+# Toy Project - zhzzk
 
-# Toy Project - myCoin
+> 네이버 치지직 클론코딩
 
-> React, TypeScript, nestjs, postgresSQL 을 이용한 치지직 클론코딩
+# Stack dependencies
+
+> Front
+- React 19
+- Nextjs 15
+- TypeScript 5
+
+> Back
+- Nestjs 10
+- postgresSQL
 
 ## 📆 프로젝트 기간
 
