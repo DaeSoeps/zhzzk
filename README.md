@@ -5,12 +5,12 @@
 # Stack dependencies
 
 > Front
-- React 19
-- Nextjs 15
+- React 18+
+- Nextjs 15+
 - TypeScript 5
 
 > Back
-- Nestjs 10
+- Nestjs 10+
 - postgresSQL
 
 ## 📆 프로젝트 기간
@@ -47,7 +47,8 @@
 
 ## 🔨 현재 개발중인 부분
 
-- SongPod : 메인 화면 레이아웃
+- 진행중: 메인 화면 레이아웃, 로그인/로그아웃
+- 진행예정: 실시간채팅(socket.io)
 
 ## 📚 Tech Stack
 
