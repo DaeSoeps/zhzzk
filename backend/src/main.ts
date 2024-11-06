@@ -6,7 +6,7 @@ import next from 'next';
 async function bootstrap() {
   // Next.js 초기 설정
   const dev = process.env.NODE_ENV !== 'production';
-  const nextApp = next({ dev });
+  const nextApp = next({ dev, dir: '../frontend' }); // frontend 디렉토리 설정
   const handle = nextApp.getRequestHandler();
 
   await nextApp.prepare();
