@@ -1,44 +1,73 @@
 "use client";
 
-import { Search, Bell, User } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+// import { Search, Bell, User } from "lucide-react";
+import { useState } from 'react';
+import { FiSearch, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
+import { BsFillPersonFill } from 'react-icons/bs';
 
-export default function Navbar() {
-  const [searchQuery, setSearchQuery] = useState("");
+const Navbar = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    // 로그아웃 로직 추가
+    console.log('Logout clicked');
+  };
 
   return (
-    <nav className="bg-[#1A1A1A] h-14 flex items-center px-4 justify-between sticky top-0 z-50">
-      <div className="flex items-center space-x-8">
-        <Link href="/" className="flex items-center">
-          <img src="/api/placeholder/100/32" alt="CHZZK" className="h-8" />
-        </Link>
-        <div className="space-x-4">
-          <Link href="/" className="text-white hover:text-green-400">
-            홈
-          </Link>
-          <Link href="/categories" className="text-white hover:text-green-400">
-            카테고리
-          </Link>
-          <Link href="/following" className="text-white hover:text-green-400">
-            팔로잉
-          </Link>
-        </div>
+    <div className="w-full h-14 bg-gray-900 flex items-center justify-between px-4 shadow-lg">
+      {/* 좌측 로고 */}
+      <h1 className="text-xl font-bold text-white">지지직</h1>
+
+      {/* 검색창 */}
+      <div className="w-1/6 relative flex items-center space-x-2">
+        <input
+          type="text"
+          placeholder="스트리머, 게임 영상 검색"
+          className="w-full bg-gray-700 text-white p-2 rounded-lg outline-none placeholder-gray-400"
+        />
+        <FiSearch className="absolute right-3 top-2.5 text-gray-400 cursor-pointer" size={20} />
       </div>
-      <div className="flex items-center space-x-4">
-        <div className="relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="스트리머, 카테고리 검색"
-            className="bg-[#2F2F2F] text-white px-4 py-2 rounded-full w-64 focus:outline-none"
-          />
-          <Search className="absolute right-3 top-2.5 text-gray-400 cursor-pointer" size={20} />
+
+      {/* 우측 프로필 드롭다운 */}
+      <div className="relative">
+        <div
+          onClick={handleToggleDropdown}
+          className="flex items-center cursor-pointer space-x-2"
+        >
+          <BsFillPersonFill className="text-white text-2xl" />
+          <FiChevronDown className="text-white" />
         </div>
-        <Bell className="text-white cursor-pointer" size={24} />
-        <User className="text-white cursor-pointer" size={24} />
+
+        {/* 드롭다운 메뉴 */}
+        {isDropdownOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg z-10">
+            <ul className="py-2 text-white">
+              <li className="px-4 py-2 hover:bg-gray-600 cursor-pointer flex items-center">
+                <FiUser className="mr-2" /> 내 채널
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-600 cursor-pointer flex items-center">
+                <FiUser className="mr-2" /> 내 구독
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-600 cursor-pointer flex items-center">
+                <FiUser className="mr-2" /> 내 채팅
+              </li>
+              <hr className="border-gray-600 my-1" />
+              <li
+                onClick={handleLogout}
+                className="px-4 py-2 hover:bg-gray-600 cursor-pointer flex items-center text-red-400"
+              >
+                <FiLogOut className="mr-2" /> 로그아웃
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
-    </nav>
+    </div>
   );
-}
+};
+
+export default Navbar;

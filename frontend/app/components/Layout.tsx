@@ -1,57 +1,29 @@
-// import React from 'react';
-// import Navbar from './Navbar';
-// import Sidebar from './Sidebar';
+import '../globals.css';
+import Sidebar from '../components/Sidebar';
+import ChatRoom from '../components/ChatRoom';
+import Navbar from '../components/Navbar';
 
-// interface LayoutProps {
-//   children: React.ReactNode;
-// }
-
-// const Layout: React.FC<LayoutProps> = ({ children }) => {
-//   return (
-//     <div className="min-h-screen bg-[#1F1F1F]">
-//       <Navbar />
-//       <div className="flex">
-//         <Sidebar />
-//         <main className="flex-1">
-//           {children}
-//         </main>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Layout;
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
-
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "CHZZK Clone",
-  description: "네이버 게임 스트리밍 플랫폼 CHZZK 클론",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
-      <body className={inter.className}>
-        <div className="min-h-screen bg-[#1F1F1F]">
-          <Navbar />
-          <div className="flex">
-            <Sidebar />
-            <main className="flex-1">
-              {children}
-            </main>
-          </div>
+    <html lang="en">
+      <body className="bg-gray-900 text-white">
+        {/* 상단 네비게이션 바 */}
+        <Navbar />
+
+        <div className="flex h-[calc(100vh-56px)]">
+          {/* 왼쪽 사이드바 */}
+          <Sidebar />
+
+          {/* 가운데 메인 콘텐츠 */}
+          <main className="flex-1 flex justify-center items-center">
+            {children}
+          </main>
+
+          {/* 오른쪽 채팅창 */}
+          <ChatRoom />
         </div>
       </body>
     </html>
   );
 }
+
