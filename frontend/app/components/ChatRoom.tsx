@@ -2,26 +2,44 @@
 import { useState, useEffect } from 'react';
 import { socket } from '../utils/socket';
 
+type Message = {
+    author: string;
+    message: string;
+};
 const ChatRoom: React.FC = () => {
-    const [messages, setMessages] = useState<string[]>([]);
-    const [newMessage, setNewMessage] = useState('');
+    const [messages, setMessages] = useState<Array<Message>>([]); // 매세지들 (채티창에 쌓인 글들)
+    const [newMessage, setNewMessage] = useState('');  // 메시지 (채팅창에 치는 중인 글)
 
     const handleSendMessage = () => {
         if (newMessage.trim()) {
             if (newMessage.trim() === '') return;
-            setMessages([...messages, newMessage]);
+
+            setMessages((currentMsg) => [
+                ...currentMsg,
+                { author: "Tester", message: newMessage },
+            ]);
+            console.log("messages : ", newMessage, messages)
             socket.emit('message', messages);
             setNewMessage(''); // 전송 후 입력 필드 비우기
+
         }
     };
 
     useEffect(() => {
         socket.on('message', (msg: string) => {
-            setMessages((prevMessages) => [...prevMessages, msg]);
+            console.log("msg : ", msg)
+            if (newMessage) {
+                setMessages((currentMsg) => [
+                    ...currentMsg,
+                    { author: "Tester", message: msg.message },
+                ]);
+            }
+
         });
 
         return () => {
             socket.off('message');
+            socket.disconnect();
         };
     }, []);
 
@@ -36,8 +54,8 @@ const ChatRoom: React.FC = () => {
         <div className="w-1/6 bg-gray-800 p-4 flex flex-col justify-between">
             <h2 className="text-lg font-bold">채팅창</h2>
             <div className="flex-1 overflow-y-auto space-y-2 mt-4">
-                {messages.map((message, index) => (
-                    <div key={index} className="p-2 bg-gray-700 rounded">{message}</div>
+                {messages.map((msg, index) => (
+                    <div key={index} className="p-2 bg-gray-700 rounded">{msg.author}: {msg.message}</div>
                 ))}
             </div>
             <div className="flex mt-4">
