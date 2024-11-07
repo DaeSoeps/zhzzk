@@ -47,8 +47,6 @@
 ## 👀 Mini TODO
 
 - styled-components babel 설정
-- 자유롭게 할 수 있는 각자 테스트 페이지?
-- 코인 openApi 웹소켓 데이터 받기
 
 ## 📚 Tech Stack
 
