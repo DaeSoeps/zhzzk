@@ -6,6 +6,12 @@ type Message = {
     author: string;
     message: string;
 };
+
+export interface IMsg {
+    user: string;
+    message: string;
+}
+
 const ChatRoom: React.FC = () => {
     const [messages, setMessages] = useState<Array<Message>>([]); // 매세지들 (채티창에 쌓인 글들)
     const [newMessage, setNewMessage] = useState('');  // 메시지 (채팅창에 치는 중인 글)
@@ -26,7 +32,7 @@ const ChatRoom: React.FC = () => {
     };
 
     useEffect(() => {
-        socket.on('message', (msg: string) => {
+        socket.on('message', (msg: IMsg) => {
             console.log("msg : ", msg)
             if (newMessage) {
                 setMessages((currentMsg) => [
