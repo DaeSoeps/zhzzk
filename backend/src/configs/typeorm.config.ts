@@ -9,6 +9,5 @@ export const typeORMConfig : TypeOrmModuleOptions = {
     password: 'sktkal!1',
     database: 'zk_streaming',
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
-    synchronize: process.env.NODE_ENV === 'production' ? false : true, // 프로덕션에서는 false로 설정
-    autoLoadEntities: true,
+    synchronize: true
 }
