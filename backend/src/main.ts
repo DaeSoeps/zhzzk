@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NextFunction, Request, Response } from 'express';
 import next from 'next';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   // Next.js 초기 설정
@@ -12,6 +13,7 @@ async function bootstrap() {
   await nextApp.prepare();
 
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Next.js 요청을 처리하기 위한 미들웨어 설정
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -23,8 +25,11 @@ async function bootstrap() {
     }
   });
 
+  //.env에서 PORT 환경 변수를 불러오며, 기본값을 3000으로 설정
+  const port = configService.get<number>('PORT', 3000);
+
   app.use('*', (req: Request, res: Response) => handle(req, res));
 
-  await app.listen(3030);
+  await app.listen(port);
 }
 bootstrap();
