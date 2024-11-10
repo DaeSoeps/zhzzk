@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
 import next from 'next';
 
@@ -12,6 +13,7 @@ async function bootstrap() {
   await nextApp.prepare();
 
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Next.js 요청을 처리하기 위한 미들웨어 설정
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +26,8 @@ async function bootstrap() {
   });
 
   app.use('*', (req: Request, res: Response) => handle(req, res));
-
-  await app.listen(3030);
+  const port = configService.get<number>('PORT', 3030);
+  console.log("port : ", port)
+  await app.listen(port);
 }
 bootstrap();
