@@ -1,6 +1,8 @@
 # Toy Project - zhzzk
 
 > 네이버 치지직 클론코딩
+- 배포 URL : https://zhzzk.onrender.com
+- 배포 방식 : Render (https://render.com/)
 
 # Stack dependencies
 
@@ -8,6 +10,7 @@
 - React 18+
 - Nextjs 15+
 - TypeScript 5
+- webRTC
 
 > Back
 - Nestjs 10+
@@ -46,7 +49,7 @@
 
 ## 👀 Mini TODO
 
-- styled-components babel 설정
+- cloud 배포
 
 ## 📚 Tech Stack
 
