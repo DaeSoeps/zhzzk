@@ -1,31 +1,26 @@
-import { Controller, Post, Body, Request, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import * as bcrypt from 'bcrypt';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
-//로그인과 회원가입 API를 제공합니다.
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
+  }
+
   @Post('login')
-  async login(@Body() loginDto: { username: string; password: string }) {
+  async login(@Body() loginDto: LoginDto) {
     const user = await this.authService.validateUser(
       loginDto.username,
       loginDto.password,
     );
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credentials');
     }
     return this.authService.login(user);
-  }
-
-  @Post('register')
-  async register(@Body() registerDto: { username: string; password: string }) {
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    // 실제 UsersService를 통해 사용자 등록 로직 작성
-    return this.authService.register({
-      username: registerDto.username,
-      password: hashedPassword,
-    });
   }
 }

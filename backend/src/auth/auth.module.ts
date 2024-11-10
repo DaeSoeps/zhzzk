@@ -3,9 +3,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersModule } from '../users/users.module'; // 사용자 관리를 위한 UsersModule
+import { UsersModule } from '../user/user.module'; // 사용자 관리를 위한 UsersModule
 
-// JWT 전략과 인증 서비스를 구성합니다.
+// JWT 전략과 인증 서비스를 구성
 @Module({
   imports: [
     UsersModule, // UsersModule에서 사용자 관리 서비스 사용

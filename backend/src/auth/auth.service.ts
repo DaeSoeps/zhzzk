@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from '../users/users.service'; // UsersService로 사용자 확인
+import { UsersService } from '../user/user.service';
+import { RegisterDto } from './dto/register.dto';
 
-//AuthService에서는 사용자 로그인 시 JWT 토큰을 생성합니다.
-
+// 회원가입과 로그인 시 JWT 토큰 발급을 담당
 @Injectable()
 export class AuthService {
   constructor(
@@ -12,9 +12,13 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async register(registerDto: RegisterDto) {
+    return await this.usersService.createUser(registerDto);
+  }
+
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
       return result;
     }
