@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import "./style.css";
 import React, { useState } from 'react';
 
@@ -71,30 +72,11 @@ const LoginForm: React.FC = () => {
                 <div className="link-container">
                     <a href="#" className="link">아이디 찾기</a>
                     <a href="#" className="link">비밀번호 찾기</a>
-                    <a href="#" className="link">회원가입</a>
+                    <Link href="/register">
+                        <span className="link">회원가입</span>
+                    </Link>
                 </div>
             </div>
-            {/* <div className="logo">ZHZZK</div>
-            <div className="login-container">
-                <h2>로그인</h2>
-                <form id="loginForm">
-                    <div className="input-group">
-                        <label htmlFor="id">아이디</label>
-                        <input type="text" id="id" name="id" required></input>
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="pw">비밀번호</label>
-                        <input type="password" id="pw" name="pw" required></input>
-                    </div>
-                    <button type="submit" className="login-button">로그인</button>
-                </form>
-
-                <div className="link-container">
-                    <a href="#" className="link">아이디 찾기</a>
-                    <a href="#" className="link">비밀번호 찾기</a>
-                    <a href="#" className="link">회원가입</a>
-                </div>
-            </div> */}
         </>
     )
 
