@@ -2,32 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
-import next from 'next';
+
 
 async function bootstrap() {
   // Next.js 초기 설정
   const dev = process.env.NODE_ENV !== 'production';
-  const nextApp = next({ dev, dir: '../frontend' }); // frontend 디렉토리 설정
-  const handle = nextApp.getRequestHandler();
-
-  await nextApp.prepare();
-
+  
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // Next.js 요청을 처리하기 위한 미들웨어 설정
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (req.path.startsWith('/_next') || req.path.startsWith('/static')) {
-      // Next.js의 정적 파일 요청
-      handle(req, res);
-    } else {
-      next(); // NestJS 라우트로 전달
-    }
+  // CORS 설정
+  app.enableCors({
+    origin: 'http://localhost:3000', // configService.get<string>('ORIGIN'), // 프론트엔드 주소
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,                // 필요한 경우, 쿠키와 같은 인증 정보를 포함할 수 있도록 설정
   });
 
-  app.use('*', (req: Request, res: Response) => handle(req, res));
   const port = configService.get<number>('PORT', 3030);
-  console.log("port : ", port)
+  console.log("port : ", port, configService.get<string>('ORIGIN'))
   await app.listen(port);
 }
 bootstrap();

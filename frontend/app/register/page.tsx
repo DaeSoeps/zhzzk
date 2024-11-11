@@ -69,7 +69,14 @@ const RegisterPage: React.FC = () => {
         if (!validate()) return;
         console.log("formData : ", formData)
         try {
-            const response = await axios.post('localhost:3030/auth/register', formData);
+            const api = axios.create({
+                baseURL: 'http://localhost:3030', // 백엔드 서버 주소
+                withCredentials: true,            // 쿠키 및 인증 정보 포함
+                headers: {
+                  'Content-Type': 'application/json', // 요청 헤더 설정
+                },
+            });
+            const response = await api.post('/auth/register', formData);
             if (response.status === 201) {
                 alert('회원가입이 완료되었습니다.');
                 router.push('/login');  // 회원가입 후 로그인 페이지로 이동

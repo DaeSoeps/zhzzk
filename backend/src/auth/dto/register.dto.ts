@@ -12,4 +12,10 @@ export class RegisterDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @IsString()
+  name: string;
+
+  @IsString()
+  phone: string;
 }
