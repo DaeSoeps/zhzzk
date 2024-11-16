@@ -16,6 +16,4 @@ export class RegisterDto {
   @IsString()
   name: string;
 
-  @IsString()
-  phone: string;
 }

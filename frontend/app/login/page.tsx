@@ -2,9 +2,13 @@
 import Link from "next/link";
 import "./style.css";
 import React, { useState } from 'react';
+import api from "../utils/api";
+import { useRouter } from 'next/navigation';
 
 
 const LoginForm: React.FC = () => {
+    const router = useRouter();
+    
     // 상태 관리
     const [id, setId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -31,13 +35,34 @@ const LoginForm: React.FC = () => {
     };
 
     // 폼 제출 핸들러
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault(); // 폼 제출 기본 동작 방지
 
         if (validateInputs()) {
             // 로그인 요청 처리
             console.log('로그인 요청을 처리합니다.');
             // 여기에 서버 요청 코드 추가 가능
+            try {
+                const response = await api.post('http://localhost:3030/auth/login', {username: id, password}, {
+                  headers: { 'Content-Type': 'application/json' },
+                });
+          
+                if (response.status === 201) {
+                  // JWT 토큰 저장 (예: localStorage)
+                  localStorage.setItem('token', response.data.token);
+          
+                  // 대시보드 페이지로 이동
+                  router.push('/');
+                }
+              } catch (error: any) {
+                if (error.response) {
+                  // 서버에서 반환한 에러 메시지 처리
+                  alert(error.response.data.message || '로그인에 실패했습니다.');
+                } else {
+                  // 네트워크 에러 또는 기타 에러 처리
+                  alert('서버와 통신에 실패했습니다.');
+                }
+            }
         }
     };
 

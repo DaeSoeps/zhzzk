@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import api from '../utils/api';
 
 const RegisterPage: React.FC = () => {
     const router = useRouter();
@@ -13,7 +14,6 @@ const RegisterPage: React.FC = () => {
         password: '',
         email: '',
         name: '',
-        phone: '',
     });
 
     const [errors, setErrors] = useState({
@@ -21,7 +21,6 @@ const RegisterPage: React.FC = () => {
         password: '',
         email: '',
         name: '',
-        phone: '',
     });
 
     // 입력 필드 값 변경 처리
@@ -34,7 +33,7 @@ const RegisterPage: React.FC = () => {
 
     // 입력 값 유효성 검사
     const validate = () => {
-        const newErrors = { username: '', password: '', email: '', name: '', phone: '' };
+        const newErrors = { username: '', password: '', email: '', name: ''};
         let isValid = true;
 
         if (!formData.username) {
@@ -69,13 +68,7 @@ const RegisterPage: React.FC = () => {
         if (!validate()) return;
         console.log("formData : ", formData)
         try {
-            const api = axios.create({
-                baseURL: 'http://localhost:3030', // 백엔드 서버 주소
-                withCredentials: true,            // 쿠키 및 인증 정보 포함
-                headers: {
-                  'Content-Type': 'application/json', // 요청 헤더 설정
-                },
-            });
+
             const response = await api.post('/auth/register', formData);
             if (response.status === 201) {
                 alert('회원가입이 완료되었습니다.');
