@@ -3,6 +3,8 @@
 > 네이버 치지직 클론코딩
 - 배포 URL : https://zhzzk.onrender.com
 - 배포 방식 : Render (https://render.com/)
+- 기타: back, sql은 배포 예정, 무료 배포라 속도가 느림, 플렛폼 대체 예정
+ 
 
 # Stack dependencies
 
