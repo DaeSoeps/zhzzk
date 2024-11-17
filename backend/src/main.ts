@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
 
 
+
 async function bootstrap() {
   // Next.js 초기 설정
   const dev = process.env.NODE_ENV !== 'production';
@@ -20,7 +21,6 @@ async function bootstrap() {
 
   const port = configService.get<number>('PORT', 3030);
   console.log("port : ", port, configService.get<string>('ORIGIN'), process.env.NODE_ENV)
-  console.log("app: ", app)
   await app.listen(port);
 }
 bootstrap();

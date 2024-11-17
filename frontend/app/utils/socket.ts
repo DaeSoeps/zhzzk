@@ -1,3 +1,7 @@
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
-export const socket = io('http://localhost:3030');  // 소켓 서버 주소
+const socket = io('http://localhost:3030');  // 소켓 서버 주소
+
+
+
+export {io, socket, Socket};

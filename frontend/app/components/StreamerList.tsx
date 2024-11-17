@@ -1,25 +1,123 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
+import api from '../utils/api';
+import { io, Socket } from '../utils/socket';
+
+interface ChatMessage {
+  message: string;
+  nickname: string;
+}
+
+interface Streamer {
+  id: string;
+  name: string;
+  icon: string;
+  viewers: number;
+  thumbnail: string;
+  game: string;
+}
 
 const StreamerList = () => {
-  const [streamers] = useState([
-    { id: 1, name: '스트리머1' },
-    { id: 2, name: '스트리머2' },
-    { id: 3, name: '스트리머3' },
-  ]);
+  const [chatData, setChatData] = useState<ChatMessage[]>([]);
+  const [streamers, setStreamers] = useState<Streamer[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [selectedStreamer, setSelectedStreamer] = useState<string | null>(null);
+
+  // API 호출 함수
+  const fetchStreamers = async () => {
+    setLoading(true);
+    setError(null);
+
+
+    // TODO : 추후에 치지직에서 스트리머 목록조회 API제공하면 기능구현.
+    try {
+      // const response = await api.get('https://api.chzzk.example.com/streamers'); // 실제 API 경로로 변경
+      // setStreamers(response.data); // API 데이터에 맞게 파싱 필요
+      const pwr = {
+        id: "0",
+        name: '풍월량',
+        icon: "test",
+        viewers: 5323,
+        thumbnail: 'TEST',
+        game: "test"
+      }
+      setStreamers([pwr])
+    } catch (error: any) {
+      setError('스트리머 정보를 불러오는 데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStreamers();
+    
+
+  }, []);
+
+
+  const handleStreamerClick = (streamer: Streamer) => {
+    setStreamers([streamer]);
+    console.log("streamerName", streamer)
+    if (socket) {
+      socket.disconnect();
+    }
+  
+    // 새 소켓 연결 생성
+    const newSocket = io('http://localhost:3030'); // WebSocket 서버 URL
+    setSocket(newSocket);
+  
+    // 서버와 연결 성공 시 실행
+    newSocket.on('connect', () => {
+      console.log('Connected to Chzzk WebSocket');
+  
+      // 서버로 스트리머 이름 전송
+      newSocket.emit('requestChatData', { streamerName: streamer.name });
+    });
+  
+    // 서버로부터 실시간 데이터 수신
+    newSocket.on('receiveChatData', (data: { chatData: ChatMessage }) => {
+      const { chatData } = data;
+      console.log('Received chat data:', chatData.message, chatData.nickname);
+      if (data) {
+        // setChatData((prev) => [...prev, ...data.chatData]); // 기존 메시지에 새 메시지 추가
+      }
+    });
+  
+    // 서버 연결 종료 이벤트 처리
+    newSocket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket');
+
+    });
+
+  };
+
 
   return (
-    <div>
-      <h3 className="text-xl font-bold mb-4">스트리머 목록</h3>
-      <ul>
-        {streamers.map((streamer) => (
-          <li key={streamer.id} className="flex items-center py-2 border-b border-gray-600">
-            <FaUserCircle className="text-2xl mr-3" />
-            <span>{streamer.name}</span>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col space-y-3">
+      {streamers.map((streamer) => (
+        <div
+          key={streamer.id}
+          className="flex items-center bg-gray-800 hover:bg-gray-700 p-3 rounded-md shadow-md transition-all"
+          onClick={() => handleStreamerClick(streamer)}
+        >
+          <img
+            // src={streamer.icon}
+            alt={streamer.name}
+            className="w-12 h-12 rounded-full border border-gray-600"
+          />
+          <div className="ml-4">
+            <h2 className="text-sm font-bold">{streamer.name}</h2>
+            <p className="text-xs text-gray-400">{streamer.game}</p>
+            <p className="text-xs text-green-400">
+              시청자 수: {streamer.viewers.toLocaleString()}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
