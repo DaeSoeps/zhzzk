@@ -14,9 +14,9 @@ async function bootstrap() {
 
   // CORS 설정
   app.enableCors({
-    origin: 'http://localhost:3000', // configService.get<string>('ORIGIN'), // 프론트엔드 주소
+    origin: configService.get<string>('ORIGIN'),// 프론트엔드 주소
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,                // 필요한 경우, 쿠키와 같은 인증 정보를 포함할 수 있도록 설정
+    credentials: true, // 필요한 경우, 쿠키와 같은 인증 정보를 포함할 수 있도록 설정
   });
 
   const port = configService.get<number>('PORT', 3030);

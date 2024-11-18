@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const socket = io('http://localhost:3030');  // 소켓 서버 주소
+const socket = io(process.env.NEXT_PUBLIC_BACK_URL);  // 소켓 서버 주소
 
 
 

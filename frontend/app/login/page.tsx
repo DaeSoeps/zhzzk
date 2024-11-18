@@ -43,7 +43,7 @@ const LoginForm: React.FC = () => {
             console.log('로그인 요청을 처리합니다.');
             // 여기에 서버 요청 코드 추가 가능
             try {
-                const response = await api.post('http://localhost:3030/auth/login', {username: id, password}, {
+                const response = await api.post('/auth/login', {username: id, password}, {
                   headers: { 'Content-Type': 'application/json' },
                 });
           

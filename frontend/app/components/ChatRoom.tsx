@@ -65,7 +65,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
             }
 
             // 새 소켓 연결 생성
-            const newSocket = io('http://localhost:3030'); // WebSocket 서버 URL
+            const newSocket = io(process.env.NEXT_PUBLIC_BACK_URL); // WebSocket 서버 URL
             setSocket(newSocket);
 
             // 서버와 연결 성공 시 실행

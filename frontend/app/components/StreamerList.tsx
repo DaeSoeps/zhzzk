@@ -5,7 +5,6 @@ import api from '../utils/api';
 import { dummyStreamerInfo as util } from '../utils/util'
 import { io, Socket } from '../utils/socket';
 import { useRouter } from 'next/navigation';
-import jake from '../../public/streamer/jake.png'
 import Image, { StaticImageData } from 'next/image';
 
 
@@ -84,7 +83,7 @@ const StreamerList: React.FC = () => {
       }
 
       // 새 소켓 연결 생성
-      const newSocket = io('http://localhost:3030'); // WebSocket 서버 URL
+      const newSocket = io(process.env.NEXT_PUBLIC_BACK_URL); // WebSocket 서버 URL
       setSocket(newSocket);
 
       // 서버와 연결 성공 시 실행
