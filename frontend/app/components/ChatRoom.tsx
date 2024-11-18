@@ -1,20 +1,43 @@
 "use client"
-import { useState, useEffect } from 'react';
-import { socket } from '../utils/socket';
-
+import { useState, useEffect, useRef } from 'react';
+import { io, socket, Socket } from '../utils/socket';
+import { helper as util } from '../utils/util'
 type Message = {
-    author: string;
+    nickname: string;
     message: string;
 };
+
+interface Streamer {
+    id: string;
+    name: string;
+    icon: string;
+    viewers: number;
+    thumbnail: string;
+    game: string;
+}
+
+
+interface ChatMessage {
+    message: string;
+    nickname: string;
+}
 
 export interface IMsg {
     user: string;
     message: string;
 }
 
-const ChatRoom: React.FC = () => {
+interface ChatRoomProps {
+    streamerName?: string; // 스트리머 이름 (방송 보기 모드에서 사용)
+    isBroadcastMode?: boolean; // 내가 방송하기 모드 여부
+}
+
+const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) => {
     const [messages, setMessages] = useState<Array<Message>>([]); // 매세지들 (채티창에 쌓인 글들)
     const [newMessage, setNewMessage] = useState('');  // 메시지 (채팅창에 치는 중인 글)
+    const [broadCastSocket, setSocket] = useState<Socket | null>(null);
+    const chatEndRef = useRef<HTMLDivElement>(null); // 스크롤을 맨 아래로 내리기 위한 참조
+    const [userColors, setUserColors] = useState<Record<string, string>>({});
 
     const handleSendMessage = () => {
         if (newMessage.trim()) {
@@ -22,7 +45,7 @@ const ChatRoom: React.FC = () => {
 
             setMessages((currentMsg) => [
                 ...currentMsg,
-                { author: "Tester", message: newMessage },
+                { nickname: "Tester", message: newMessage },
             ]);
             console.log("messages : ", newMessage, messages)
             socket.emit('message', messages);
@@ -31,23 +54,98 @@ const ChatRoom: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        socket.on('message', (msg: IMsg) => {
-            console.log("msg : ", msg)
-            if (newMessage) {
-                setMessages((currentMsg) => [
-                    ...currentMsg,
-                    { author: "Tester", message: msg.message },
-                ]);
+    // 소켓으로 실시간 채팅 내역 불러오기(치지직)
+    const getStreamerChat = (streamer: string) => {
+
+        if (streamer) {
+
+            console.log("streamerName", streamer)
+            if (broadCastSocket) {
+                broadCastSocket.disconnect();
             }
 
-        });
+            // 새 소켓 연결 생성
+            const newSocket = io('http://localhost:3030'); // WebSocket 서버 URL
+            setSocket(newSocket);
+
+            // 서버와 연결 성공 시 실행
+            newSocket.on('connect', () => {
+                console.log('Connected to Chzzk WebSocket', streamer);
+
+                // 서버로 스트리머 이름 전송
+                newSocket.emit('requestChatData', { streamerName: streamer });
+            });
+
+            // 서버로부터 실시간 데이터 수신
+            newSocket.on('receiveChatData', (data: { chatData: ChatMessage }) => {
+                const { chatData } = data;
+                // console.log('Received chat data:', chatData.message, chatData.nickname);
+                if (data) {
+                    // setChatData((prev) => [...prev, ...data.chatData]); // 기존 메시지에 새 메시지 추가
+                }
+                setMessages((currentMsg) => [
+                    ...currentMsg,
+                    { nickname: chatData.nickname, message: chatData.message },
+                ]);
+            });
+
+            // 서버 연결 종료 이벤트 처리
+            newSocket.on('disconnect', () => {
+                console.log('Disconnected from WebSocket');
+
+            });
+        }
+
+
+    };
+
+
+
+    const getUserColor = (username: string): string => {
+        const utils = new util();
+        if (!userColors[username]) {
+            const newColor = utils.getRandomDarkColor();
+            setUserColors((prev) => ({ ...prev, [username]: newColor }));
+        }
+        console.log("userColors[username] : ", userColors[username])
+        return userColors[username];
+    };
+
+
+
+
+    useEffect(() => {
+
+        if (isBroadcastMode) {
+            socket.on('message', (msg: IMsg) => {
+                console.log("msg : ", msg)
+                if (newMessage) {
+                    setMessages((currentMsg) => [
+                        ...currentMsg,
+                        { nickname: "Tester", message: msg.message },
+                    ]);
+                }
+
+            });
+        } else {
+            console.log("streamerName !!!", streamerName)
+            streamerName && getStreamerChat(streamerName);
+        }
 
         return () => {
-            socket.off('message');
-            socket.disconnect();
+            if (isBroadcastMode) {
+                socket.off('message');
+                socket.disconnect();
+            } else {
+
+            }
         };
     }, []);
+
+    useEffect(() => {
+        // 새로운 메시지가 추가될 때 스크롤을 맨 아래로 이동
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
 
     // 엔터키를 누르면 sendMessage 함수를 호출
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -57,20 +155,27 @@ const ChatRoom: React.FC = () => {
     };
 
     return (
-        <div className="w-1/6 bg-gray-800 p-4 flex flex-col justify-between">
-            <h2 className="text-lg font-bold">채팅창</h2>
-            <div className="flex-1 overflow-y-auto space-y-2 mt-4">
+        <div className="flex flex-col h-full">
+            {/* <h2 className="text-lg font-bold">채팅창</h2> */}
+            <h1 className="text-xl font-bold mb-4 text-center border-b border-gray-700 pb-2">
+                채팅창
+            </h1>
+            <div className="flex-1 mt-2 overflow-y-auto bg-gray-800 no-scrollbar space-y-2 p-4 rounded-t-md">
                 {messages.map((msg, index) => (
-                    <div key={index} className="p-2 bg-gray-700 rounded">{msg.author}: {msg.message}</div>
+                    <p key={index} className="p-2 bg-gray-700 rounded">
+                        <strong style={{ color: getUserColor(msg.nickname) }}>{msg.nickname}:</strong> {msg.message}
+                    </p>
                 ))}
+                {/* 맨 아래로 스크롤을 위한 요소 */}
+                <div ref={chatEndRef} />
             </div>
-            <div className="flex mt-4">
+            <div className="flex mt-2">
                 <input
+                    className="flex-1 p-2 bg-gray-700 text-white rounded-l-md"
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="메시지를 입력하세요"
-                    className="flex-1 p-2 bg-gray-700 rounded-l outline-none"
+                    placeholder="채팅을 입력해주세요"
                     onKeyDown={handleKeyPress} // 엔터키 감지
                 />
                 <button onClick={handleSendMessage} className="bg-blue-500 p-2 rounded-r">

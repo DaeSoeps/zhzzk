@@ -8,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 // 회원가입 및 인증
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/user.module';
-import { ChzzkModule } from './chzzk/chzzk.module';
+
 
 @Module({
   imports: [
@@ -20,7 +20,6 @@ import { ChzzkModule } from './chzzk/chzzk.module';
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
     }),
-    ChzzkModule,
     // TypeOrmModule.forRoot(typeORMConfig)
   ],
   providers: [ChatGateway],
