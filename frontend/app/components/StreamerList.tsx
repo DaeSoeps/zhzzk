@@ -1,7 +1,5 @@
 "use client"
 import { useEffect, useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-import api from '../utils/api';
 import { dummyStreamerInfo as util } from '../utils/util'
 import { io, Socket } from '../utils/socket';
 import { useRouter } from 'next/navigation';
@@ -23,12 +21,10 @@ interface Streamer {
 }
 
 const StreamerList: React.FC = () => {
-  const [chatData, setChatData] = useState<ChatMessage[]>([]);
   const [streamers, setStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [selectedStreamer, setSelectedStreamer] = useState<string | null>(null);
   const router = useRouter();
 
 
@@ -59,8 +55,8 @@ const StreamerList: React.FC = () => {
 
       const streamerInfoAry = generateStreamers(8);
       setStreamers(streamerInfoAry)
-    } catch (error: any) {
-      setError('스트리머 정보를 불러오는 데 실패했습니다.');
+    } catch (error) {
+      setError(`스트리머 정보를 불러오는 데 실패했습니다. ${error}`);
     } finally {
       setLoading(false);
     }
@@ -96,7 +92,7 @@ const StreamerList: React.FC = () => {
 
       // 서버로부터 실시간 데이터 수신
       newSocket.on('receiveChatData', (data: { chatData: ChatMessage }) => {
-        const { chatData } = data;
+        // const { chatData } = data;
         // console.log('Received chat data:', chatData.message, chatData.nickname);
         if (data) {
           // setChatData((prev) => [...prev, ...data.chatData]); // 기존 메시지에 새 메시지 추가
@@ -114,6 +110,9 @@ const StreamerList: React.FC = () => {
 
   };
 
+  //TODO : 로딩, 에러처리 필요
+  if(loading === true) return <div>Loading...</div>
+  if(error) return <div>error!</div>
 
   return (
     <div className="flex flex-col space-y-3">

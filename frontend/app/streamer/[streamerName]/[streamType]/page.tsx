@@ -4,14 +4,9 @@ import { useParams } from 'next/navigation';
 import ChatRoom from '../../../components/ChatRoom';
 import StreamPlayer from '../../../components/StreamPlayer';
 import Layout from '../../../components/Layout';
-import { GetServerSideProps, GetStaticProps } from 'next';
-
-interface StreamerPageProps {
-    streamerName: string;
-}
 
 
-const StreamerPage: React.FC<StreamerPageProps> = () => {
+const StreamerPage: React.FC = () => {
     const params = useParams<{ streamerName: string; streamType: string }>();
     console.log("PROPS : ", params )
     const streamerName = decodeURIComponent(params.streamerName);

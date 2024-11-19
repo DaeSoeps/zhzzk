@@ -7,16 +7,6 @@ type Message = {
     message: string;
 };
 
-interface Streamer {
-    id: string;
-    name: string;
-    icon: string;
-    viewers: number;
-    thumbnail: string;
-    game: string;
-}
-
-
 interface ChatMessage {
     message: string;
     nickname: string;
@@ -45,7 +35,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
 
             setMessages((currentMsg) => [
                 ...currentMsg,
-                { nickname: "Tester", message: newMessage },
+                { nickname: "Guest", message: newMessage },
             ]);
             console.log("messages : ", newMessage, messages)
             socket.emit('message', messages);
@@ -56,9 +46,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
 
     // 소켓으로 실시간 채팅 내역 불러오기(치지직)
     const getStreamerChat = (streamer: string) => {
-
         if (streamer) {
-
             console.log("streamerName", streamer)
             if (broadCastSocket) {
                 broadCastSocket.disconnect();
@@ -92,11 +80,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
             // 서버 연결 종료 이벤트 처리
             newSocket.on('disconnect', () => {
                 console.log('Disconnected from WebSocket');
-
             });
         }
-
-
+        return;
     };
 
 
@@ -129,15 +115,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
             });
         } else {
             console.log("streamerName !!!", streamerName)
-            streamerName && getStreamerChat(streamerName);
+            if(streamerName) getStreamerChat(streamerName);
         }
 
         return () => {
             if (isBroadcastMode) {
                 socket.off('message');
                 socket.disconnect();
-            } else {
-
             }
         };
     }, []);

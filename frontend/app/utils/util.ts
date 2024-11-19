@@ -84,10 +84,11 @@ export class dummyStreamerInfo {
 export class helper {
     // 얕은 색의 랜덤컬러 생성 함수
     public getRandomDarkColor = (): string => {
-        const hue = Math.floor(Math.random() * 360);
-        const saturation = Math.random() * 0.5 + 0.5;
-        const value = Math.random() * 0.4 + 0.3;
+        const hue = Math.floor(Math.random() * 360); // 0 ~ 360 (색상)
+        const saturation = Math.random() * 0.5 + 0.7; // 50% ~ 100% (채도)
+        const value = Math.random() * 0.3 + 0.7; // 60% ~ 100% (밝기)
 
+        // HSV -> RGB 변환
         const c = value * saturation;
         const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
         const m = value - c;

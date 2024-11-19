@@ -1,5 +1,4 @@
 "use client";
-import StreamPlayer from './components/StreamPlayer';
 import Layout from './components/Layout'
 export default function HomePage() {
   return (

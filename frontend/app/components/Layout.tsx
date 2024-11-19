@@ -1,6 +1,5 @@
 import '../globals.css';
 import Sidebar from '../components/Sidebar';
-import ChatRoom from '../components/ChatRoom';
 import Navbar from '../components/Navbar';
 import Footer from './Footer';
 
@@ -21,10 +20,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <main className="flex-1 flex justify-center items-center shadow-lg">
             {children}
           </main>
-          {/* <ChatRoom /> */}
-          {/* 하단 푸터 */}
-          
         </div>
+        {/* 하단 푸터 */}
         <Footer />
       </body>
     </html>

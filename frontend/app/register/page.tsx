@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import api from '../utils/api';
 
 const RegisterPage: React.FC = () => {
