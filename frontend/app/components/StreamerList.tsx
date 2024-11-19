@@ -65,14 +65,13 @@ const StreamerList: React.FC = () => {
   useEffect(() => {
     fetchStreamers();
 
-
   }, []);
 
 
   const handleStreamerClick = (streamer?: Streamer) => {
 
     if (streamer) {
-      setStreamers([streamer]);
+
       console.log("streamerName", streamer)
       if (socket) {
         socket.disconnect();
