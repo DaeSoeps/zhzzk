@@ -16,9 +16,9 @@ export class BoardsService {
         private boardRepository: BoardRepository,
     ){}
 
-    createBoard(createBoardDto : CreateBoardDto): Promise<Board>{
-        return this.boardRepository.createBoard(createBoardDto);
-    }
+    // createBoard(createBoardDto : CreateBoardDto): Promise<Board>{
+    //     return this.boardRepository.createBoard(createBoardDto);
+    // }
 
     async deleteBoard(id: number): Promise<void>{
         const result = await this.boardRepository.delete(id);
