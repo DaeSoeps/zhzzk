@@ -1,12 +1,4 @@
 {
   "extends": "./tsconfig.json",
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
-  "compilerOptions": {
-    "outDir": "./dist",
-    "diagnostics": true,
-    "listFiles": true,
-    "sourceMap": false,
-    "incremental": true,
-    "target": "ES2018"
-  },
 }
