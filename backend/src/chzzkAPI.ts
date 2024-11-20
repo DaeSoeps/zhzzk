@@ -11,7 +11,7 @@ export class ChzzkChatService extends EventEmitter {
   // 실시간 채팅 메시지를 저장하는 변수
   private chatMessages: string[] = [];
 
-  constructor(streamerName : string) {
+  constructor(streamerName: string) {
     super();
     this.initializeClient(streamerName);
   }
@@ -31,12 +31,14 @@ export class ChzzkChatService extends EventEmitter {
     const liveDetail = await this.client.live.detail(channel.channelId);
 
     if (liveDetail) {
-      const media = liveDetail.livePlayback.media;
-      const hls = media.find((media) => media.mediaId === 'HLS');
+      const media = liveDetail.livePlayback?.media ? liveDetail.livePlayback.media : null;
+      if (media) {
+        const hls = media.find((media) => media.mediaId === 'HLS');
 
-      if (hls) {
-        const m3u8 = await this.client.fetch(hls.path).then((r) => r.text());
-        this.logger.log(`HLS Playlist: ${m3u8}`);
+        if (hls) {
+          const m3u8 = await this.client.fetch(hls.path).then((r) => r.text());
+          this.logger.log(`HLS Playlist: ${m3u8}`);
+        }
       }
     }
 
@@ -67,8 +69,8 @@ export class ChzzkChatService extends EventEmitter {
 
       // 메시지를 저장
       this.chatMessages.push(`${nickname}: ${message}`);
-    //   this.logger.log(`New Message: ${nickname}: ${message}`);
-      this.emit('newMessage', {nickname, message});
+      //   this.logger.log(`New Message: ${nickname}: ${message}`);
+      this.emit('newMessage', { nickname, message });
     });
 
     this.chzzkChat.on('subscription', (subscription: any) => {

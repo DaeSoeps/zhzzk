@@ -41,7 +41,7 @@ const useStreamerStore = create<StreamerStore>((set, get) => ({
 
     // 최초 스트리머 추가 TODO: 추후에 fetchStreamers 로 구현
     setStreamer: (streamer: Streamer[]) => {
-        set((state) => ({
+        set(() => ({
             streamers: streamer,
         }));
     },
@@ -80,7 +80,7 @@ const useStreamerStore = create<StreamerStore>((set, get) => ({
         })) 
 
     },
-    
+
     getIsMyStreming:()=>{
         return get().isMyStreming;
     }

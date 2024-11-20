@@ -102,7 +102,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
             const newColor = utils.getRandomDarkColor();
             setUserColors((prev) => ({ ...prev, [username]: newColor }));
         }
-        console.log("userColors[username] : ", userColors[username])
         return userColors[username];
     };
 

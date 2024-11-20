@@ -23,6 +23,7 @@ interface Streamer {
 
 const StreamerList: React.FC = () => {
   // const [streamers, setStreamers] = useState<Streamer[]>([]);
+  const [nowStreamer, setNowStreamer] = useState<Streamer | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -79,7 +80,9 @@ const StreamerList: React.FC = () => {
 
   const handleStreamerClick = (streamer?: Streamer) => {
     // 스트리머 파라미터 여부에 따라서 스트리머 방송보기 / 내 방송하기 로직 구분
+    setNowStreamer(streamer || null);
     if (streamer) {
+      if(nowStreamer?.name === streamer.name) return; // 현재스트리머일때 로직타지않기
       setIsMyStreming(false); // 내가방송하기 해체
       console.log("streamerName", streamer)
       if (socket) {
