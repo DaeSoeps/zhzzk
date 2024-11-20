@@ -23,6 +23,7 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) => {
+    const MAX_MESSAGES = 100; // 최대 메시지 수
     const [messages, setMessages] = useState<Array<Message>>([]); // 매세지들 (채티창에 쌓인 글들)
     const [newMessage, setNewMessage] = useState('');  // 메시지 (채팅창에 치는 중인 글)
     const [broadCastSocket, setSocket] = useState<Socket | null>(null);
@@ -71,10 +72,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
                 if (data) {
                     // setChatData((prev) => [...prev, ...data.chatData]); // 기존 메시지에 새 메시지 추가
                 }
-                setMessages((currentMsg) => [
-                    ...currentMsg,
-                    { nickname: chatData.nickname, message: chatData.message },
-                ]);
+                // setMessages((currentMsg) => [
+                //     ...currentMsg,
+                //     { nickname: chatData.nickname, message: chatData.message },
+                // ]);
+                setMessages((currentMsg) => {
+                    const updatedMessages = [...currentMsg, { nickname: chatData.nickname, message: chatData.message }];
+                    // 최대 채팅갯수를 제한하는 로직 추가
+                    if (updatedMessages.length > MAX_MESSAGES) {
+                        return updatedMessages.slice(-MAX_MESSAGES);
+                    }
+                    return updatedMessages;
+                });
             });
 
             // 서버 연결 종료 이벤트 처리
@@ -101,20 +110,26 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
 
 
     useEffect(() => {
-
         if (isBroadcastMode) {
             socket.on('message', (msg: IMsg) => {
-                console.log("msg : ", msg)
                 if (newMessage) {
-                    setMessages((currentMsg) => [
-                        ...currentMsg,
-                        { nickname: "Tester", message: msg.message },
-                    ]);
+                    // setMessages((currentMsg) => [
+                    //     ...currentMsg,
+                    //     { nickname: "Tester", message: msg.message },
+                    // ]);
+                    setMessages((currentMsg) => {
+                        const updatedMessages = [...currentMsg, { nickname: "Tester", message: msg.message }];
+                        // 최대 채팅갯수를 제한하는 로직 추가
+                        if (updatedMessages.length > MAX_MESSAGES) {
+                            return updatedMessages.slice(-MAX_MESSAGES);
+                        }
+                        return updatedMessages;
+                    });
                 }
 
             });
         } else {
-            console.log("streamerName !!!", streamerName)
+            console.log("SELECT streamerName :", streamerName)
             if(streamerName) getStreamerChat(streamerName);
         }
 
