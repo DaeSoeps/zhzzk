@@ -3,7 +3,7 @@
 > 네이버 치지직 클론코딩
 - 배포 URL : https://zhzzk.onrender.com
 - 배포 방식 : Render (https://render.com/)
-- 기타: back, sql은 배포 예정, 무료 배포라 속도가 느림, 플렛폼 대체 예정
+- 기타 : 무료 배포라 속도가 느림, 플렛폼 대체 예정
  
 
 # Stack dependencies
@@ -25,8 +25,8 @@
 
 ## 🔨 현재 개발중인 부분
 
-- 진행중: 메인 화면 레이아웃, 로그인/로그아웃
-- 진행예정: 실시간채팅(socket.io), 배포
+- 진행중: 실시간채팅(socket.io)
+- 진행예정: LiveStreaming(WebRTC 학습필요)
 
 ## 💻 화면 개발
 
@@ -51,7 +51,14 @@
 
 ## 👀 Mini TODO
 
-- cloud 배포
+- 메인 화면 레이아웃 (완료 2024.11.18)
+- 로그인/로그아웃 (완료 2024.11.15)
+- 배포 (완료 2024.11.19)
+- 실시간 채팅
+- LiveStreaming (WebRTC 학습필요)
+- 모바일 반응형
+- 타 플렛폼 라이브 스트리밍(유튜브, 트위치)
+- CI/CD 구축
 
 ## 📚 Tech Stack
 
