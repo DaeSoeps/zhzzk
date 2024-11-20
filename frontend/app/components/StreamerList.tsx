@@ -4,6 +4,7 @@ import { dummyStreamerInfo as util } from '../utils/util'
 import { io, Socket } from '../utils/socket';
 import { useRouter } from 'next/navigation';
 import Image, { StaticImageData } from 'next/image';
+import useStreamerStore from '../store/useStreamerStore';
 
 
 interface ChatMessage {
@@ -21,11 +22,12 @@ interface Streamer {
 }
 
 const StreamerList: React.FC = () => {
-  const [streamers, setStreamers] = useState<Streamer[]>([]);
+    // const [streamers, setStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const router = useRouter();
+  const { streamers, setStreamer, addStreamer, updateStreamer } = useStreamerStore();
 
 
   // 스트리머 Dummy 데이터 생성 함수
@@ -54,7 +56,7 @@ const StreamerList: React.FC = () => {
       // setStreamers(response.data); // API 데이터에 맞게 파싱 필요
 
       const streamerInfoAry = generateStreamers(8);
-      setStreamers(streamerInfoAry)
+      setStreamer(streamerInfoAry)
     } catch (error) {
       setError(`스트리머 정보를 불러오는 데 실패했습니다. ${error}`);
     } finally {
@@ -63,7 +65,9 @@ const StreamerList: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchStreamers();
+    if(streamers.length === 0){
+      fetchStreamers();
+    }
 
   }, []);
 
