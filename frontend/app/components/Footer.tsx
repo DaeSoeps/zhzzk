@@ -8,7 +8,9 @@ const Footer: React.FC = () => {
         <p className="text-sm">
           copyright © {new Date().getFullYear()} My Streaming App. All rights reserved by DaeSoeps.
         </p>
-
+        <p className="text-sm">
+        Version 0.0.1
+        </p>
         {/* 출처 및 링크 */}
         <div className="flex space-x-4 mt-2 sm:mt-0">
           <a
