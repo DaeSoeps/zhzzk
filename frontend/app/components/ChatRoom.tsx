@@ -39,7 +39,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
                 { nickname: "Guest", message: newMessage },
             ]);
             console.log("messages : ", newMessage, messages)
-            socket.emit('message', messages);
+            socket.emit('message', messages); // 메시지를 서버로 전송
             setNewMessage(''); // 전송 후 입력 필드 비우기
 
         }
@@ -94,8 +94,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
         return;
     };
 
-
-
     const getUserColor = (username: string): string => {
         const utils = new util();
         if (!userColors[username]) {
@@ -105,17 +103,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
         return userColors[username];
     };
 
-
-
-
     useEffect(() => {
         if (isBroadcastMode) {
-            socket.on('message', (msg: IMsg) => {
-                if (newMessage) {
-                    // setMessages((currentMsg) => [
-                    //     ...currentMsg,
-                    //     { nickname: "Tester", message: msg.message },
-                    // ]);
+            socket.on('connect', () => {
+                socket.on('message', (msg: IMsg) => {
+
+                    console.log('Message received:', msg);
                     setMessages((currentMsg) => {
                         const updatedMessages = [...currentMsg, { nickname: "Tester", message: msg.message }];
                         // 최대 채팅갯수를 제한하는 로직 추가
@@ -124,18 +117,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
                         }
                         return updatedMessages;
                     });
-                }
-
+    
+    
+                });
             });
+
         } else {
             console.log("SELECT streamerName :", streamerName)
-            if(streamerName) getStreamerChat(streamerName);
+            if (streamerName) getStreamerChat(streamerName);
         }
 
         return () => {
             if (isBroadcastMode) {
                 socket.off('message');
                 socket.disconnect();
+            }else{
+                broadCastSocket?.disconnect();
             }
         };
     }, []);

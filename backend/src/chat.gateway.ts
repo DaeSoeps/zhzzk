@@ -29,7 +29,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   // 클라이언트가 'message' 이벤트를 통해 메시지를 전송할 때 호출
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: { sender: string, message: string }): void {
+  handleMessage(@MessageBody() data: { nickname: string, message: string }): void {
     console.log("send ! : ", data)
     // 모든 클라이언트에게 메시지를 전송
     this.server.emit('message', data);
