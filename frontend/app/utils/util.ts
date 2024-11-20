@@ -71,7 +71,7 @@ export class dummyStreamerInfo {
 
     // 중복없는 이름 생성
     public getUniqueName = (count: number) => {
-        const names = ['배돈', '풍월량', '김도', '한동숙', '녹두로', '울프', '인간젤리', '똘똘똘이', '철면수심', '지니어스매드'];
+        const names = ['배돈', '풍월량', '김도', '한동숙', '녹두로', '울프', '똘똘똘이', '지니어스매드'];
         const shuffledImages = this.shuffleArray(names);
         return shuffledImages.slice(0, count); // 필요한 개수만큼 반환
     };

@@ -22,12 +22,17 @@ interface Streamer {
 }
 
 const StreamerList: React.FC = () => {
-    // const [streamers, setStreamers] = useState<Streamer[]>([]);
+  // const [streamers, setStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const router = useRouter();
-  const { streamers, setStreamer, addStreamer, updateStreamer } = useStreamerStore();
+  const {
+    streamers,
+    setStreamer,
+    isMyStreming,
+    setIsMyStreming
+  } = useStreamerStore();
 
 
   // 스트리머 Dummy 데이터 생성 함수
@@ -55,7 +60,7 @@ const StreamerList: React.FC = () => {
       // const response = await api.get('https://api.chzzk.example.com/streamers'); // 실제 API 경로로 변경
       // setStreamers(response.data); // API 데이터에 맞게 파싱 필요
 
-      const streamerInfoAry = generateStreamers(8);
+      const streamerInfoAry = generateStreamers(7);
       setStreamer(streamerInfoAry)
     } catch (error) {
       setError(`스트리머 정보를 불러오는 데 실패했습니다. ${error}`);
@@ -65,7 +70,7 @@ const StreamerList: React.FC = () => {
   };
 
   useEffect(() => {
-    if(streamers.length === 0){
+    if (streamers.length === 0) {
       fetchStreamers();
     }
 
@@ -73,9 +78,9 @@ const StreamerList: React.FC = () => {
 
 
   const handleStreamerClick = (streamer?: Streamer) => {
-
+    // 스트리머 파라미터 여부에 따라서 스트리머 방송보기 / 내 방송하기 로직 구분
     if (streamer) {
-
+      setIsMyStreming(false); // 내가방송하기 해체
       console.log("streamerName", streamer)
       if (socket) {
         socket.disconnect();
@@ -108,14 +113,18 @@ const StreamerList: React.FC = () => {
 
       });
       router.push(`/streamer/${streamer.name}/${streamer.streamType}`);
+    } else {
+      // 내가 방송하기
+      router.push(`/broadcast`);
+      setIsMyStreming(true);
     }
 
 
   };
 
   //TODO : 로딩, 에러처리 필요
-  if(loading === true) return <div>Loading...</div>
-  if(error) return <div>error!</div>
+  if (loading === true) return <div>Loading...</div>
+  if (error) return <div>error!</div>
 
   return (
     <div className="flex flex-col space-y-3">
@@ -139,7 +148,17 @@ const StreamerList: React.FC = () => {
           </div>
         </div>
       ))}
-    </div>
+      {/* 내가 방송하기 */}
+      {!isMyStreming &&
+        <div
+          className="flex items-center justify-center bg-blue-600 hover:bg-blue-500 p-3 rounded-md shadow-md transition-all cursor-pointer"
+          onClick={() => handleStreamerClick()}
+        >
+          <h2 className="text-white font-bold text-sm">내가 방송하기</h2>
+        </div>
+      }
+
+    </div >
   );
 };
 

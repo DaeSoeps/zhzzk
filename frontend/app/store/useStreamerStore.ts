@@ -19,12 +19,15 @@ interface StreamerStore {
     setStreamer: (streamer: Streamer[]) => void; // 기본 스트리머(fetchStreamers 로 대체 필요)
     updateStreamer: (name: string, data: Partial<Streamer>) => void; // 스트리머 정보 업데이트
     getStreamerByName: (name: string) => Streamer | undefined; // 특정 스트리머 가져오기
+    isMyStreming: boolean; // 내가 방송중인지 스트리머 방송 보는중인지 구분
+    setIsMyStreming: (value : boolean) => void;
+    getIsMyStreming: () => boolean;
 }
 
 // Zustand 스토어 생성
 const useStreamerStore = create<StreamerStore>((set, get) => ({
     streamers: [],
-
+    isMyStreming: false,
     // 스트리머 리스트를 API로부터 가져오는 함수
     fetchStreamers: async () => {
         try {
@@ -69,6 +72,19 @@ const useStreamerStore = create<StreamerStore>((set, get) => ({
         const streamers = get().streamers;
         return streamers.find((streamer) => streamer.name === name);
     },
+
+    // 내가 방송중이면 다른사람이 방송할 수 없음, 방송 요청버튼 구현하기
+    setIsMyStreming:(value : boolean) =>{
+        set(() => ({
+            isMyStreming: value
+        })) 
+
+    },
+    
+    getIsMyStreming:()=>{
+        return get().isMyStreming;
+    }
+
 }));
 
 export default useStreamerStore;
