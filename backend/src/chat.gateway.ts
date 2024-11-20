@@ -32,7 +32,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   handleMessage(@MessageBody() data: { nickname: string, message: string }): void {
     console.log("send ! : ", data)
     // 모든 클라이언트에게 메시지를 전송
-    this.server.emit('message', data);
+    this.server.emit('message', {nickname : data.nickname, message: data.message});
   }
 
   // 특정 이벤트 처리 (실시간 채팅 데이터 요청)

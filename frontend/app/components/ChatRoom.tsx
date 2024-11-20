@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { io, socket, Socket } from '../utils/socket';
 import { helper as util } from '../utils/util'
+import { faker } from "@faker-js/faker";
+
 type Message = {
     nickname: string;
     message: string;
@@ -13,7 +15,7 @@ interface ChatMessage {
 }
 
 export interface IMsg {
-    user: string;
+    nickname: string;
     message: string;
 }
 
@@ -24,6 +26,7 @@ interface ChatRoomProps {
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) => {
     const MAX_MESSAGES = 100; // 최대 메시지 수
+    const [nickname] = useState<string>(() => faker.person.firstName() + faker.person.lastName());
     const [messages, setMessages] = useState<Array<Message>>([]); // 매세지들 (채티창에 쌓인 글들)
     const [newMessage, setNewMessage] = useState('');  // 메시지 (채팅창에 치는 중인 글)
     const [broadCastSocket, setSocket] = useState<Socket | null>(null);
@@ -33,15 +36,24 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
     const handleSendMessage = () => {
         if (newMessage.trim()) {
             if (newMessage.trim() === '') return;
+            const messageData = {
+                nickname: nickname, // 기본 닉네임 설정
+                message: newMessage.trim(), // 공백 제거
+            };
 
+            // 메시지를 상태에 추가
             setMessages((currentMsg) => [
                 ...currentMsg,
-                { nickname: "Guest", message: newMessage },
+                { nickname: messageData.nickname, message: messageData.message },
             ]);
-            console.log("messages : ", newMessage, messages)
-            socket.emit('message', messages); // 메시지를 서버로 전송
-            setNewMessage(''); // 전송 후 입력 필드 비우기
 
+            console.log("Sending message:", messageData);
+
+            // 서버로 메시지 전송
+            socket.emit('message', messageData);
+
+            // 입력 필드 초기화
+            setNewMessage('');
         }
     };
 
@@ -106,22 +118,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
     useEffect(() => {
         if (isBroadcastMode) {
             socket.on('connect', () => {
-                socket.on('message', (msg: IMsg) => {
-
-                    console.log('Message received:', msg);
+                console.log('개인방송 소켓 연결 성공');
+            });
+            socket.on('message', (msg: IMsg) => {
+                console.log('Message received:', msg);
+                if (msg.nickname !== nickname) {
                     setMessages((currentMsg) => {
-                        const updatedMessages = [...currentMsg, { nickname: "Tester", message: msg.message }];
+                        const updatedMessages = [...currentMsg, { nickname: msg.nickname, message: msg.message }];
                         // 최대 채팅갯수를 제한하는 로직 추가
                         if (updatedMessages.length > MAX_MESSAGES) {
                             return updatedMessages.slice(-MAX_MESSAGES);
                         }
                         return updatedMessages;
                     });
-    
-    
-                });
-            });
 
+                }
+            });
         } else {
             console.log("SELECT streamerName :", streamerName)
             if (streamerName) getStreamerChat(streamerName);
@@ -131,7 +143,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName, isBroadcastMode }) =>
             if (isBroadcastMode) {
                 socket.off('message');
                 socket.disconnect();
-            }else{
+            } else {
                 broadCastSocket?.disconnect();
             }
         };
