@@ -60,6 +60,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
     const getStreamerChat = (streamer: string) => {
         if (streamer) {
             console.log("streamerName", streamer)
+            // 소켓이 이미 연결되어 있으면 새로 생성하지 않도록
+            if (socket?.connected) {
+                console.log('Socket already connected:', streamer);
+                return;
+            }
+            // 기존 소켓이 있으면 정리
             if (socket) {
                 socket.disconnect();
             }
@@ -79,14 +85,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             // 서버로부터 실시간 데이터 수신
             newSocket.on('receiveChatData', (data: { chatData: ChatMessage }) => {
                 const { chatData } = data;
-                // console.log('Received chat data:', chatData.message, chatData.nickname);
-                if (data) {
-                    // setChatData((prev) => [...prev, ...data.chatData]); // 기존 메시지에 새 메시지 추가
-                }
-                // setMessages((currentMsg) => [
-                //     ...currentMsg,
-                //     { nickname: chatData.nickname, message: chatData.message },
-                // ]);
+
                 setMessages((currentMsg) => {
                     const updatedMessages = [...currentMsg, { nickname: chatData.nickname, message: chatData.message }];
                     // 최대 채팅갯수를 제한하는 로직 추가
@@ -120,7 +119,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             socket?.off('message');
             socket?.disconnect();
         };
-    }, []);
+    }, [streamerName]);
 
     useEffect(() => {
         // 새로운 메시지가 추가될 때 스크롤을 맨 아래로 이동

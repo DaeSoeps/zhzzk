@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatRoom from '../components/ChatRoom';
+import ChatRoomBroadCast from '../components/ChatRoomBroadCast';
 import StreamPlayer from '../components/StreamPlayer';
 import Layout from '../components/Layout';
 
@@ -14,7 +14,7 @@ const BroadcastPage: React.FC = () => {
 
             {/* 오른쪽 채팅 영역 */}
             <div className="w-[300px] bg-gray-800 p-4 h-full overflow-y-auto">
-                <ChatRoom isBroadcastMode />
+                <ChatRoomBroadCast isBroadcastMode />
             </div>
         </Layout>
 
