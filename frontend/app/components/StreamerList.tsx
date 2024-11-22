@@ -5,7 +5,7 @@ import { io, Socket } from '../utils/socket';
 import { useRouter } from 'next/navigation';
 import Image, { StaticImageData } from 'next/image';
 import useStreamerStore from '../store/useStreamerStore';
-
+import { useBroadCastStore } from '../store/useBroadCastStore';
 
 interface ChatMessage {
   message: string;
@@ -31,10 +31,8 @@ const StreamerList: React.FC = () => {
   const {
     streamers,
     setStreamer,
-    isMyStreming,
-    setIsMyStreming
   } = useStreamerStore();
-
+  const { setIsMyStreaming } = useBroadCastStore();
 
   // 스트리머 Dummy 데이터 생성 함수
   const generateStreamers = (count: number): Streamer[] => {
@@ -83,7 +81,7 @@ const StreamerList: React.FC = () => {
     setNowStreamer(streamer || null);
     if (streamer) {
       if(nowStreamer?.name === streamer.name) return; // 현재스트리머일때 로직타지않기
-      setIsMyStreming(false); // 내가방송하기 해체
+      setIsMyStreaming(false); // 내가방송하기 해체
       console.log("streamerName", streamer)
       if (socket) {
         socket.disconnect();
@@ -116,12 +114,7 @@ const StreamerList: React.FC = () => {
 
       });
       router.push(`/streamer/${streamer.name}/${streamer.streamType}`);
-    } else {
-      // 내가 방송하기
-      router.push(`/broadcast`);
-      setIsMyStreming(true);
-    }
-
+    } 
 
   };
 
@@ -151,16 +144,6 @@ const StreamerList: React.FC = () => {
           </div>
         </div>
       ))}
-      {/* 내가 방송하기 */}
-      {!isMyStreming &&
-        <div
-          className="flex items-center justify-center bg-blue-600 hover:bg-blue-500 p-3 rounded-md shadow-md transition-all cursor-pointer"
-          onClick={() => handleStreamerClick()}
-        >
-          <h2 className="text-white font-bold text-sm">내가 방송하기</h2>
-        </div>
-      }
-
     </div >
   );
 };

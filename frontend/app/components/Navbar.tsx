@@ -5,9 +5,13 @@ import { useState } from 'react';
 import { FiSearch, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
 import { BsFillPersonFill } from 'react-icons/bs';
 import Link from 'next/link'
+import { useBroadCastStore } from '../store/useBroadCastStore';
+import { useRouter } from 'next/navigation';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { isMyStreaming, setIsMyStreaming } = useBroadCastStore();
+  const router = useRouter();
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -16,6 +20,16 @@ const Navbar = () => {
   const handleLogout = () => {
     // 로그아웃 로직 추가
     console.log('Logout clicked');
+  };
+
+  const handleIsMyStreaming = () => {
+    if(isMyStreaming === true){
+      setIsMyStreaming(false) 
+    }else{
+      setIsMyStreaming(true);
+      router.push(`/broadcast`);
+
+    }
   };
 
   return (
@@ -32,6 +46,15 @@ const Navbar = () => {
         />
         <FiSearch className="absolute right-3 top-2.5 text-gray-400 cursor-pointer" size={20} />
       </div>
+
+      {/* 내 방송하기 버튼 */}
+      <button
+        onClick={handleIsMyStreaming}
+        className={`px-4 py-2 text-sm font-medium rounded-lg ${isMyStreaming ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
+          } text-white`}
+      >
+        {isMyStreaming ? '방송 중지' : '내 방송하기'}
+      </button>
 
       {/* 우측 프로필 드롭다운 */}
       <div className="relative">
