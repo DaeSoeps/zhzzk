@@ -78,6 +78,7 @@ const StreamerList: React.FC = () => {
 
   const handleStreamerClick = (streamer?: Streamer) => {
     // 스트리머 파라미터 여부에 따라서 스트리머 방송보기 / 내 방송하기 로직 구분
+    if(streamer?.streamType === 'broadcast') return router.push(`/broadcast`); // 방송중인 사람이면 브로드캐스트로 이동
     setNowStreamer(streamer || null);
     if (streamer) {
       if(nowStreamer?.name === streamer.name) return; // 현재스트리머일때 로직타지않기

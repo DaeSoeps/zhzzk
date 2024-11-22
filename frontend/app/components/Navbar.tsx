@@ -5,12 +5,17 @@ import { useState } from 'react';
 import { FiSearch, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
 import { BsFillPersonFill } from 'react-icons/bs';
 import Link from 'next/link'
-import { useBroadCastStore } from '../store/useBroadCastStore';
 import { useRouter } from 'next/navigation';
+import { useBroadCastStore } from '../store/useBroadCastStore';
+import useStreamerStore from '../store/useStreamerStore';
+import finn from '../../public/streamer/finn.png';
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { isMyStreaming, setIsMyStreaming } = useBroadCastStore();
+  const {
+    addStreamer
+  } = useStreamerStore();
   const router = useRouter();
 
   const handleToggleDropdown = () => {
@@ -27,6 +32,15 @@ const Navbar: React.FC = () => {
       setIsMyStreaming(false) 
     }else{
       setIsMyStreaming(true);
+      const me = [{
+        id: 'test',
+        name: 'ME',
+        icon: finn,
+        viewers: 1,
+        game: '내 방송',
+        streamType: 'broadcast',
+    }]
+      addStreamer(me)
       router.push(`/broadcast`);
 
     }
