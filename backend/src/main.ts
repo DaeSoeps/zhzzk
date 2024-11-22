@@ -2,13 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
-
-
+const { Server } = require('socket.io');
+const http = require('http');
 
 async function bootstrap() {
   // Next.js 초기 설정
   const dev = process.env.NODE_ENV !== 'production';
-  
+
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
@@ -21,6 +21,33 @@ async function bootstrap() {
 
   const port = configService.get<number>('PORT', 3030);
   console.log("port : ", port, configService.get<string>('ORIGIN'), process.env.NODE_ENV)
+
+
+  // Signaling 서버 부분
+
+  const server = http.createServer(app);
+  const io = new Server(server);
+  io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+
+    // WebRTC signaling message 처리
+    socket.on('offer', (data) => {
+      socket.broadcast.emit('offer', data);
+    });
+
+    socket.on('answer', (data) => {
+      socket.broadcast.emit('answer', data);
+    });
+
+    socket.on('ice-candidate', (data) => {
+      socket.broadcast.emit('ice-candidate', data);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+    });
+  });
+
   await app.listen(port);
 }
 bootstrap();
