@@ -5,7 +5,6 @@ import Layout from '../components/Layout';
 
 const BroadcastPage: React.FC = () => {
     return (
-
         <Layout>
             <div className="flex w-full h-full">
                 {/* 가운데 메인 콘텐츠: 플레이어 */}
@@ -19,7 +18,6 @@ const BroadcastPage: React.FC = () => {
                 </div>
             </div>
         </Layout>
-
     );
 };
 
