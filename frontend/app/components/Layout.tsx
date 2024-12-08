@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className="bg-gray-900 text-white flex flex-col min-h-screen">
         {/* 상단 네비게이션 바 */}
         <Navbar />
-        
+
         <div className="flex h-[calc(100vh-116px)]">
           {/* 왼쪽 사이드바 */}
           <Sidebar />
@@ -20,6 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <main className="flex-1 flex justify-center items-center shadow-lg">
             {children}
           </main>
+
         </div>
         {/* 하단 푸터 */}
         <Footer />

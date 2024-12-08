@@ -139,7 +139,7 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
   // TODO: 네이버 치지직은 현재 영상 API 제공하지 않음, 제공시 구현 필요 
   if (streamType === 'CHZZK') {
     return (
-      <div>
+      <div className='row-start-3'>
         <span className="block text-center text-red-500">치지직은 현재 스트리밍 API가 없어서 영상을 제공할 수 없습니다.</span>
         <span className="block text-center text-red-300">(API 제공 시 구현 예정)</span>
       </div>

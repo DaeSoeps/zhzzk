@@ -14,9 +14,11 @@ type Streamer = {
 // 스토어 상태와 동작 정의
 interface StreamerStore {
     streamers: Streamer[]; // 스트리머 리스트
+    nowStreamer : Streamer | null; // 현재 보고있는 스트리머
     fetchStreamers: () => Promise<void>; // API 호출
     addStreamer: (streamer: Streamer[]) => void; // 스트리머 추가
     setStreamer: (streamer: Streamer[]) => void; // 기본 스트리머(fetchStreamers 로 대체 필요)
+    setNowStreamer: (streamer: Streamer) => void;
     updateStreamer: (name: string, data: Partial<Streamer>) => void; // 스트리머 정보 업데이트
     getStreamerByName: (name: string) => Streamer | undefined; // 특정 스트리머 가져오기
     isMyStreming: boolean; // 내가 방송중인지 스트리머 방송 보는중인지 구분
@@ -27,7 +29,15 @@ interface StreamerStore {
 // Zustand 스토어 생성
 const useStreamerStore = create<StreamerStore>((set, get) => ({
     streamers: [],
+    nowStreamer: null,
     isMyStreming: false,
+
+    setNowStreamer: (params: Streamer) => {
+        set(() => ({
+            nowStreamer: params,
+        }));
+    },
+
     // 스트리머 리스트를 API로부터 가져오는 함수
     fetchStreamers: async () => {
         try {
@@ -40,9 +50,9 @@ const useStreamerStore = create<StreamerStore>((set, get) => ({
     },
 
     // 최초 스트리머 추가 TODO: 추후에 fetchStreamers 로 구현
-    setStreamer: (streamer: Streamer[]) => {
+    setStreamer: (params: Streamer[]) => {
         set(() => ({
-            streamers: streamer,
+            streamers: params,
         }));
     },
 

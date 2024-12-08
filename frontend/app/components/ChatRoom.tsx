@@ -134,7 +134,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col  h-full ">
             {/* <h2 className="text-lg font-bold">채팅창</h2> */}
             <h1 className="text-xl font-bold mb-4 text-center border-b border-gray-700 pb-2">
                 채팅창
