@@ -1,30 +1,28 @@
 "use client";
 
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 // import { Search, Bell, User } from "lucide-react";
 import React, { useEffect } from "react";
 import useStreamerStore from "../store/useStreamerStore";
 
+interface LiveInfomationProps {
+    streamerName?: string; // 스트리머 이름 (방송 보기 모드에서 사용)
+}
 
-type Streamer = {
-    id: string;
-    name: string;
-    icon: StaticImageData;
-    viewers: number;
-    game: string;
-    streamType: string;
-};
+const LiveInfomation: React.FC<LiveInfomationProps> = ({ streamerName }) => {
+    const { nowStreamer, streamers, setNowStreamer } = useStreamerStore();
 
+    useEffect(() => {
+        // 현재스트리머 설정하기
+        if (streamers.length > 0) {
+            streamers.filter((v) => v.name === streamerName ? setNowStreamer(v) : null);
 
-const LiveInfomation: React.FC = () => {
-    const {nowStreamer} = useStreamerStore();
-    
-    // useEffect(() => {
-    //     console.log(" LIVE StreamerInfo : ", StreamerInfo)
-    // }, [StreamerInfo]);
-    if(!nowStreamer) return <></>
+        }
+    }, [streamers]);
+
+    if (!nowStreamer) return <></>
     return (
-        
+
         <div className="row-start-5  bg-gray-800   w-full h-full ">
             {/* 스트리머 아이콘 */}
             <Image

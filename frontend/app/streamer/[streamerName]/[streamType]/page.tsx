@@ -1,11 +1,20 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'next/navigation';
 import ChatRoom from '../../../components/ChatRoom';
 import StreamPlayer from '../../../components/StreamPlayer';
 import Layout from '../../../components/Layout';
 import LiveInfomation from '@/app/components/LiveInfomation';
-import useStreamerStore from '@/app/store/useStreamerStore';
+// import { GetStaticPaths } from 'next';
+
+
+// export const getStaticPaths = (async () => {
+//     return {
+//       paths: [
+//       ],
+//       fallback: "blocking", // false or "blocking"
+//     }
+//   }) satisfies GetStaticPaths
 
 
 const StreamerPage: React.FC = () => {
@@ -13,22 +22,14 @@ const StreamerPage: React.FC = () => {
     console.log("PROPS : ", params)
     const streamerName = decodeURIComponent(params.streamerName);
     // const streamUrl = `https://example.com/hls/${streamerName}.m3u8`; // HLS URL
-    const { nowStreamer, streamers, setNowStreamer } = useStreamerStore();
 
-    useEffect(() => {
-        // 현재스트리머 설정하기
-        if (streamers.length > 0) {
-            streamers.filter((v) => v.name === streamerName ? setNowStreamer(v) : null);
-
-        }
-    }, [streamers]);
 
     return (
         <Layout>
             {/* 가운데 메인 콘텐츠: 플레이어 */}
             <div className="grid grid-rows-5 justify-stretch justify-center items-center h-full w-full">
                 <StreamPlayer streamUrl={""} streamType={params.streamType} />
-                <LiveInfomation />
+                <LiveInfomation streamerName={streamerName}/>
             </div>
 
             {/* 오른쪽 채팅 영역 */}

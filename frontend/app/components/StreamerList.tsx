@@ -50,7 +50,7 @@ const StreamerList: React.FC = () => {
   };
 
   // API 호출 함수
-  const fetchStreamers = async () => {
+  const fetchStreamer = async () => {
     setLoading(true);
     setError(null);
 
@@ -78,10 +78,10 @@ const StreamerList: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchStreamers();
+    fetchStreamer();
     console.log("nowStreamer : ", nowStreamer)
     console.log("streamers : ", streamers)
-  }, []);
+  },[]);
 
 
   const handleStreamerClick = (streamer?: Streamer) => {
