@@ -19,6 +19,7 @@ export class ChzzkChatService extends EventEmitter {
   // 치지직 클라이언트 초기화
   private async initializeClient(streamerName: string) {
     this.client = new ChzzkClient.ChzzkClient();
+
     const channelName = streamerName;
     const result = await this.client.search.channels(channelName);
     const channel = result.channels[0];
@@ -42,6 +43,8 @@ export class ChzzkChatService extends EventEmitter {
       }
     }
 
+
+
     // 채팅 연결
     this.connectChat(channel.channelId);
   }
@@ -50,6 +53,8 @@ export class ChzzkChatService extends EventEmitter {
   private connectChat(channelId: string) {
     this.chzzkChat = this.client.chat({
       channelId,
+      // chatChannelId 의 변경을 감지하기 위한 polling 요청의 주기 (선택사항, ms 단위)
+      // channelId를 지정할 경우 자동으로 30초로 설정됨, 0초로 설정 시 polling 요청을 하지 않음
       pollInterval: 30 * 1000, // 30초마다 변경 감지
     });
 
@@ -58,8 +63,14 @@ export class ChzzkChatService extends EventEmitter {
       this.chzzkChat.requestRecentChat(50); // 최근 50개 채팅 요청
     });
 
+    // 재연결 (방송 시작 시
     this.chzzkChat.on('reconnect', (newChatChannelId: string) => {
       this.logger.log(`Reconnected to Chat Channel: ${newChatChannelId}`);
+    });
+
+    // 채팅채널이 없는경우
+    this.chzzkChat.on('NotChatChannelId', () => {
+      this.emit('NotChatChannelId');
     });
 
     // 일반 채팅 수신
@@ -87,6 +98,11 @@ export class ChzzkChatService extends EventEmitter {
       this.logger.log(`Notice: ${notice}`);
     });
 
+    this.chzzkChat.on('disconnect', (reason: string) => {
+      this.logger.error(`Disconnected from Chzzk Chat. Reason: ${reason}`);
+      this.handleDisconnection(reason);
+    });
+
     // 채팅 연결
     this.chzzkChat.connect();
   }
@@ -97,10 +113,21 @@ export class ChzzkChatService extends EventEmitter {
   }
 
   // 서비스 종료 시 자원 정리
-  async onModuleDestroy() {
+  public async onModuleDestroy() {
     if (this.chzzkChat) {
       await this.chzzkChat.disconnect();
       this.logger.log('Disconnected from Chzzk Chat');
+    }
+  }
+
+  private async handleDisconnection(reason: string) {
+    this.logger.warn(`Handling disconnection. Reason: ${reason}`);
+    try {
+      this.onModuleDestroy();
+
+    } catch (error) {
+      this.logger.error(`handleDisconnection failed: ${error.message}`);
+
     }
   }
 }

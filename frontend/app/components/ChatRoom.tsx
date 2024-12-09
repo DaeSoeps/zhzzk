@@ -74,6 +74,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             const newSocket = io(process.env.NEXT_PUBLIC_BACK_URL); // WebSocket 서버 URL
             setSocket(newSocket);
 
+            newSocket.on('NotChatChannelId', (data)=>{
+                console.log("NotChatChannelId data : ", data)
+            })
+            
             // 서버와 연결 성공 시 실행
             newSocket.on('connect', () => {
                 console.log('Connected to Chzzk WebSocket', streamer);
@@ -118,6 +122,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
         return () => {
             socket?.off('message');
             socket?.disconnect();
+            socket?.on('disconnect', () => {
+                console.log('useEffect Disconnected from WebSocket : ', streamerName);
+            });
         };
     }, [streamerName]);
 

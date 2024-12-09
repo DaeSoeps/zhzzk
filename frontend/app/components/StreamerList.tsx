@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
 import { dummyStreamerInfo as util } from '../utils/util'
-import { io, Socket } from '../utils/socket';
 import { useRouter } from 'next/navigation';
 import Image, { StaticImageData } from 'next/image';
 import useStreamerStore from '../store/useStreamerStore';
@@ -26,7 +25,7 @@ const StreamerList: React.FC = () => {
   const { nowStreamer, setNowStreamer } = useStreamerStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
+
   const router = useRouter();
   const {
     streamers,
@@ -84,44 +83,16 @@ const StreamerList: React.FC = () => {
   },[]);
 
 
-  const handleStreamerClick = (streamer?: Streamer) => {
+  const handleStreamerClick = (streamer: Streamer) => {
     // 스트리머 파라미터 여부에 따라서 스트리머 방송보기 / 내 방송하기 로직 구분
-    if (streamer?.streamType === 'broadcast') return router.push(`/broadcast`); // 방송중인 사람이면 브로드캐스트로 이동
+    if (streamer.streamType === 'broadcast') return router.push(`/broadcast`); // 방송중인 사람이면 브로드캐스트로 이동
     streamer && setNowStreamer(streamer);
     if (streamer) {
-      if (nowStreamer?.name === streamer.name) return; // 현재스트리머일때 로직타지않기
-      setIsMyStreaming(false); // 내가방송하기 해체
-      console.log("streamerName", streamer)
-      if (socket) {
-        socket.disconnect();
+      if(nowStreamer){
+        if (nowStreamer.name === streamer.name) return; // 현재스트리머일때 로직타지않기
       }
+      setIsMyStreaming(false); // 내가방송하기 해체
 
-      // 새 소켓 연결 생성
-      const newSocket = io(process.env.NEXT_PUBLIC_BACK_URL); // WebSocket 서버 URL
-      setSocket(newSocket);
-
-      // 서버와 연결 성공 시 실행
-      newSocket.on('connect', () => {
-        console.log('Connected to Chzzk WebSocket');
-
-        // 서버로 스트리머 이름 전송
-        newSocket.emit('requestChatData', { streamerName: streamer.name });
-      });
-
-      // 서버로부터 실시간 데이터 수신
-      newSocket.on('receiveChatData', (data: { chatData: ChatMessage }) => {
-        // const { chatData } = data;
-        // console.log('Received chat data:', chatData.message, chatData.nickname);
-        if (data) {
-          // setChatData((prev) => [...prev, ...data.chatData]); // 기존 메시지에 새 메시지 추가
-        }
-      });
-
-      // 서버 연결 종료 이벤트 처리
-      newSocket.on('disconnect', () => {
-        console.log('Disconnected from WebSocket');
-
-      });
       router.push(`/streamer/${streamer.name}/${streamer.streamType}`);
     }
 
