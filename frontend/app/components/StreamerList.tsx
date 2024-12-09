@@ -7,11 +7,6 @@ import useStreamerStore from '../store/useStreamerStore';
 import { useBroadCastStore } from '../store/useBroadCastStore';
 import { addStreamer, getStreamers } from '../firebase/firebaseActions';
 
-interface ChatMessage {
-  message: string;
-  nickname: string;
-}
-
 interface Streamer {
   id: string;
   name: string;
