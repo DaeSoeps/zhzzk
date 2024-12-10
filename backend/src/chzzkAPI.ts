@@ -69,8 +69,8 @@ export class ChzzkChatService extends EventEmitter {
     });
 
     // 채팅채널이 없는경우
-    this.chzzkChat.on('NotChatChannelId', () => {
-      this.emit('NotChatChannelId');
+    this.chzzkChat.on('NoChatChannelId', () => {
+      this.emit('NoChatChannelId');
     });
 
     // 일반 채팅 수신

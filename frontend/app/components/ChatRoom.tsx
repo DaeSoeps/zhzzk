@@ -74,8 +74,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             const newSocket = io(process.env.NEXT_PUBLIC_BACK_URL); // WebSocket 서버 URL
             setSocket(newSocket);
 
-            newSocket.on('NotChatChannelId', (data)=>{
-                console.log("NotChatChannelId data : ", data)
+            newSocket.on('NoChatChannelId', (data)=>{
+                console.log("NoChatChannelId data : ", data)
             })
             
             // 서버와 연결 성공 시 실행

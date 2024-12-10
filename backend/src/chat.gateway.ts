@@ -79,8 +79,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       });
 
       // 채팅채널이 없는경우
-      chzzkChatService.on('NotChatChannelId', () => {
-        this.server.to(client.id).emit('NotChatChannelId', { streamerName: streamerName });
+      chzzkChatService.on('NoChatChannelId', () => {
+        this.server.to(client.id).emit('NoChatChannelId', { streamerName: streamerName });
       });
     }
 
