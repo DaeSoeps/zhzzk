@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import * as ChzzkClient from 'chzzk';
+import * as ChzzkClient from 'chzzk-custom';
 import { EventEmitter } from 'events';
 
 @Injectable()
@@ -69,8 +69,8 @@ export class ChzzkChatService extends EventEmitter {
     });
 
     // 채팅채널이 없는경우
-    this.chzzkChat.on('NoChatChannelId', () => {
-      this.emit('NoChatChannelId');
+    this.chzzkChat.on('NoChatChannelId', (streamerStatus: object) => {
+      this.emit('NoChatChannelId', streamerStatus);
     });
 
     // 일반 채팅 수신
@@ -115,7 +115,9 @@ export class ChzzkChatService extends EventEmitter {
   // 서비스 종료 시 자원 정리
   public async onModuleDestroy() {
     if (this.chzzkChat) {
-      await this.chzzkChat.disconnect();
+      if(this.chzzkChat.connected){
+        await this.chzzkChat.disconnect();
+      }
       this.logger.log('Disconnected from Chzzk Chat');
     }
   }

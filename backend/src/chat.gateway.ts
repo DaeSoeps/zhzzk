@@ -79,8 +79,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       });
 
       // 채팅채널이 없는경우
-      chzzkChatService.on('NoChatChannelId', () => {
-        this.server.to(client.id).emit('NoChatChannelId', { streamerName: streamerName });
+      chzzkChatService.on('NoChatChannelId', (streamerStatus :object) => {
+        this.server.to(client.id).emit('NoChatChannelId', { streamerName: streamerName, streamerStatus });
       });
     }
 
@@ -105,7 +105,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const service = this.chatServices.get(disconnectedStreamer);
         if (service) {
           service.removeAllListeners(); // 등록된 이벤트 제거
-          this.chatServices.delete(disconnectedStreamer); // 맵에서 제거
+          this.chatServices.delete(disconnectedStreamer); // 서비스클래스에서 제거
           service.onModuleDestroy();
           this.logger.log(`Service for streamer ${disconnectedStreamer} has been cleaned up.`);
         }
