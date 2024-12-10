@@ -31,6 +31,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const chatEndRef = useRef<HTMLDivElement>(null); // 스크롤을 맨 아래로 내리기 위한 참조
     const [userColors, setUserColors] = useState<Record<string, string>>({});
+    const [error, setError] = useState<string | null>(null);
 
     const handleSendMessage = () => {
         if (newMessage.trim()) {
@@ -74,10 +75,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             const newSocket = io(process.env.NEXT_PUBLIC_BACK_URL); // WebSocket 서버 URL
             setSocket(newSocket);
 
-            newSocket.on('NoChatChannelId', (data)=>{
+            newSocket.on('NoChatChannelId', (data) => {
                 console.log("NoChatChannelId data : ", data)
+                if (data.streamerStatus) {
+                    setError(`해당 스트리머는 현재 채팅 채널에 문제가 있습니다.`)
+                }
+
             })
-            
+
             // 서버와 연결 성공 시 실행
             newSocket.on('connect', () => {
                 console.log('Connected to Chzzk WebSocket', streamer);
@@ -139,6 +144,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             handleSendMessage();
         }
     };
+
+    if (error) return (
+        <>
+            <h1 className="text-xl font-bold mb-4 text-center border-b border-gray-700 pb-2">
+                채팅창
+            </h1>
+            <div>{error}</div>
+        </>
+    )
 
     return (
         <div className="flex flex-col  h-full ">

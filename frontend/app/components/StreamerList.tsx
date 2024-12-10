@@ -73,9 +73,12 @@ const StreamerList: React.FC = () => {
 
   useEffect(() => {
     fetchStreamer();
-    console.log("nowStreamer : ", nowStreamer)
-    console.log("streamers : ", streamers)
+
   },[]);
+
+  useEffect(() => {
+    console.log("nowStreamer : ", nowStreamer)
+  },[streamers]);
 
 
   const handleStreamerClick = (streamer: Streamer) => {
