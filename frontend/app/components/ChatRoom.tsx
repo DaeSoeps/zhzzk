@@ -32,6 +32,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
     const chatEndRef = useRef<HTMLDivElement>(null); // 스크롤을 맨 아래로 내리기 위한 참조
     const [userColors, setUserColors] = useState<Record<string, string>>({});
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const handleSendMessage = () => {
         if (newMessage.trim()) {
@@ -89,6 +90,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
 
                 // 서버로 스트리머 이름 전송
                 newSocket.emit('requestChatData', { streamerName: streamer });
+                setLoading(false)
             });
 
             // 서버로부터 실시간 데이터 수신
@@ -151,6 +153,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
                 채팅창
             </h1>
             <div>{error}</div>
+        </>
+    )
+
+    if (loading) return (
+        <>
+            <h1 className="text-xl font-bold mb-4 text-center border-b border-gray-700 pb-2">
+                채팅창
+            </h1>
+            <div>로딩중입니다. 잠시만 기다려주세요.</div>
         </>
     )
 

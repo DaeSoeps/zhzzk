@@ -89,7 +89,7 @@ const StreamerList: React.FC = () => {
   };
 
   //TODO : 로딩, 에러처리 필요
-  if (loading === true) return <div>Loading...</div>
+  if (loading === true) return <div>로딩중입니다. 잠시만 기다려주세요.</div>
   if (error) return <div>{error}</div>
 
   return (
