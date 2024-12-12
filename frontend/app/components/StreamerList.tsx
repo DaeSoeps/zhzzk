@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from 'react';
 import { dummyStreamerInfo as util } from '../utils/util'
 import { useRouter } from 'next/navigation';
@@ -18,7 +18,7 @@ interface Streamer {
 
 const StreamerList: React.FC = () => {
   const { nowStreamer, setNowStreamer } = useStreamerStore();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
@@ -44,11 +44,7 @@ const StreamerList: React.FC = () => {
   };
 
   // API 호출 함수
-  const fetchStreamer = async () => {
-    setLoading(true);
-    setError(null);
-
-    // TODO : 추후에 치지직에서 스트리머 목록조회 API제공하면 기능구현.
+  const fetchStreamer = () => {
     try {
       const fetchStreamers = async () => {
         // Firebase에서 스트리머 목록 가져오기
@@ -76,10 +72,6 @@ const StreamerList: React.FC = () => {
 
   },[]);
 
-  useEffect(() => {
-    console.log("nowStreamer : ", nowStreamer)
-  },[streamers]);
-
 
   const handleStreamerClick = (streamer: Streamer) => {
     // 스트리머 파라미터 여부에 따라서 스트리머 방송보기 / 내 방송하기 로직 구분
@@ -98,11 +90,11 @@ const StreamerList: React.FC = () => {
 
   //TODO : 로딩, 에러처리 필요
   if (loading === true) return <div>Loading...</div>
-  if (error) return <div>error!</div>
+  if (error) return <div>{error}</div>
 
   return (
     <div className="flex flex-col space-y-3">
-      {streamers.length > 0 &&  streamers.map((streamer, i) => (
+      {streamers.map((streamer, i) => (
         <div
           key={streamer.id + i}
           className={`flex items-center ${nowStreamer?.name === streamer.name ? 'bg-[#14532d]' : 'bg-gray-800'} hover:bg-gray-700 p-3 rounded-md shadow-md transition-all cursor-pointer`}

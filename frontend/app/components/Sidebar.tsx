@@ -1,3 +1,4 @@
+'use client';
 import StreamerList from "./StreamerList";
 const Sidebar = () => {
   return (
