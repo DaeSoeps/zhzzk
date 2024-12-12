@@ -160,7 +160,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ streamerName }) => {
             <h1 className="text-xl font-bold mb-4 text-center border-b border-gray-700 pb-2">
                 채팅창
             </h1>
-            <div className="flex-1 mt-2 overflow-y-auto bg-gray-800 no-scrollbar space-y-2 p-4 rounded-t-md">
+            <div className="flex-1 mt-2 overflow-y-auto bg-gray-800 scrollbar-hide space-y-2 p-4 rounded-t-md">
                 {messages.map((msg, index) => (
                     <p key={index} className="p-2 bg-gray-700 rounded">
                         <strong style={{ color: getUserColor(msg.nickname) }}>{msg.nickname}:</strong> {msg.message}
