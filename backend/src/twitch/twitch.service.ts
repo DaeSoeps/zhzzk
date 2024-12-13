@@ -4,14 +4,16 @@ import { lastValueFrom } from 'rxjs'; // RxJS를 사용하여 HTTP 요청 결과
 
 @Injectable()
 export class TwitchService {
-  private clientId = 'slya9puzot7sjt6m12cymymtbwgc5r'; // 발급받은 Client ID
-  private clientSecret = 'shsrfj4w0e2rc9t8htqsvk559hdolv'; // 발급받은 Client Secret
+  private clientId = process.env.TWITCH_CLIENT_ID; // 발급받은 Client ID
+  private clientSecret = process.env.TWITCH_CLIENT_SECRET; // 발급받은 Client Secret
   private accessToken: string | null = null;
+  private readonly redirectUri = process.env.TWITCH_REDIRECT_URI
 
   constructor(private readonly httpService: HttpService) {}
 
   async getAccessToken(): Promise<string> {
     if (!this.accessToken) {
+      // Access Token 요청
       const response$ = this.httpService.post(
         'https://id.twitch.tv/oauth2/token',
         null,
@@ -20,11 +22,12 @@ export class TwitchService {
             client_id: this.clientId,
             client_secret: this.clientSecret,
             grant_type: 'client_credentials',
+            redirect_uri: this.redirectUri, // 리디렉션 URL 추가
           },
         },
       );
 
-      const response = await lastValueFrom(response$); // Observable을 Promise로 변환
+      const response = await lastValueFrom(response$);
       this.accessToken = response.data.access_token;
     }
     return this.accessToken;
