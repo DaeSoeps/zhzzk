@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { BoardsModule } from './boards/boards.module';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { DatabaseModule } from './database/database.module';
@@ -12,7 +12,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { TwitchGateway } from './twitch/twitch.gateway';
 import { TwitchModule } from './twitch/twitch.module';
-
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -42,4 +42,20 @@ import { TwitchModule } from './twitch/twitch.module';
   ],
 
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cors({
+          origin: [
+            'https://zhzzk.onrender.com', // 배포 환경 URL
+            'http://localhost:3000', // 개발 환경 URL
+          ],
+          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          credentials: true,
+        }),
+      )
+      .forRoutes('*');
+  }
+
+}
