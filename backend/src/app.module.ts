@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/user.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { TwitchGateway } from './twitch/twitch.gateway';
+import { TwitchModule } from './twitch/twitch.module';
 
 
 @Module({
@@ -26,6 +28,7 @@ import { APP_GUARD } from '@nestjs/core';
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
     }),
+    TwitchModule,
     // TypeOrmModule.forRoot(typeORMConfig)
   ],
   providers: [
@@ -33,7 +36,8 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    }
+    },
+    TwitchGateway
 
   ],
 
