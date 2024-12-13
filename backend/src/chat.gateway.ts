@@ -66,7 +66,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     // 이미 생성된 ChzzkChatService가 있으면 재사용
 
-    // TODO : DisConnect 이벤트가 발생하지 않음.........
     // if (!this.chatServices.has(streamerName)) {
     if (true) {
       this.logger.log(`신규 추가 streamer: ${streamerName}`);
