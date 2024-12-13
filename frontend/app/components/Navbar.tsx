@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
         className={`px-4 py-2 text-sm font-medium rounded-lg ${isMyStreaming ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
           } text-white`}
       >
-        {isMyStreaming ? '방송 중지' : '내 방송하기'}
+        {isMyStreaming ? '방송 중지' : '방송하기'}
       </button>
 
       {/* 우측 프로필 드롭다운 */}

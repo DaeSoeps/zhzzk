@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { dummyStreamerInfo as util } from '../utils/util'
+import { dummyStreamerInfo as util } from '../../utils/util'
 import { useRouter } from 'next/navigation';
 import Image, { StaticImageData } from 'next/image';
-import useStreamerStore from '../store/useStreamerStore';
-import { useBroadCastStore } from '../store/useBroadCastStore';
-import { addStreamer, getStreamers } from '../firebase/firebaseActions';
+import useStreamerStore from '../../store/useStreamerStore';
+import { useBroadCastStore } from '../../store/useBroadCastStore';
+import { addStreamer, getStreamers } from '../../firebase/firebaseActions';
 
 interface Streamer {
   id: string;
