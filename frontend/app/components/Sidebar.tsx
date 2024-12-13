@@ -1,22 +1,33 @@
 'use client';
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import StreamerListChzzk from "./StreamerList/StreamerListChzzk";
-import StreamerListYoutube from "./StreamerList/StreamerListYoutube";
+// import StreamerListYoutube from "./StreamerList/StreamerListYoutube";
 import StreamerListTwitch from "./StreamerList/StreamerListTwitch";
+import useStreamerStore from '../store/useStreamerStore';
 
+
+// TODO: 전역 타입으로 옮기기
+enum StreamPlatforms {
+  chzzk = '치지직',
+  youtube = '유튜브',
+  twitch = '트위치'
+}
 
 const Sidebar = () => {
-  const [platforms] = useState(['치지직', '유튜브', '트위치']);
-  const [currentPlatform, setCurrentPlatform] = useState('치지직'); // 기본 스트리머 목록은 치지직
-
-  const handlePlatformsChange = (value: string) => {
-    setCurrentPlatform(value);
+  const [platforms] = useState([
+    StreamPlatforms.chzzk,
+    // StreamPlatforms.youtube,
+     StreamPlatforms.twitch
+  ]);
+  const { nowPlatform, setNowPlatform } = useStreamerStore(); // 현재 플렛폼, 기본값은 치지직
+  const handlePlatformsChange = (value: StreamPlatforms) => {
+    setNowPlatform(value);
   }
 
   const docStreamerList = () => {
-    if (currentPlatform === '치지직') return <StreamerListChzzk />
-    if (currentPlatform === '유튜브') return <StreamerListYoutube />
-    if (currentPlatform === '트위치') return <StreamerListTwitch />
+    if (nowPlatform === StreamPlatforms.chzzk) return <StreamerListChzzk />
+    // if (nowPlatform === StreamPlatforms.youtube) return <StreamerListYoutube />
+    if (nowPlatform === StreamPlatforms.twitch) return <StreamerListTwitch />
   }
 
   return (
@@ -29,7 +40,7 @@ const Sidebar = () => {
           <button
             key={platform}
             onClick={() => handlePlatformsChange(platform)}
-            className={`text-white px-4 py-2 rounded-lg ${currentPlatform === platform ? 'bg-[#14532d]' : 'bg-gray-600 hover:bg-gray-500'
+            className={`text-white px-4 py-2 rounded-lg ${nowPlatform === platform ? 'bg-[#14532d]' : 'bg-gray-600 hover:bg-gray-500'
               }`}
           >
             {platform}

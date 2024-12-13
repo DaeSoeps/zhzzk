@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player';
 import { io } from 'socket.io-client';
 import { useBroadCastStore } from '../store/useBroadCastStore';
+import useStreamerStore from '../store/useStreamerStore';
 
 interface StreamPlayerProps {
   isBroadcastMode?: boolean; // 내가 방송하기 모드 여부
@@ -17,6 +18,8 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const screenVideoRef = useRef<HTMLVideoElement>(null);
   const { isMyStreaming, setIsMyStreaming } = useBroadCastStore();
+  const { nowStreamer } = useStreamerStore();
+
 
   const startScreenStreaming = async () => {
     try {
@@ -73,21 +76,21 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
         peerConnection.current.close();
         peerConnection.current = null;
       }
-  
+
       // 2. 로컬 화면 스트림 트랙 중지
       if (screenVideoRef.current?.srcObject) {
         const stream = screenVideoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach((track) => track.stop());
         screenVideoRef.current.srcObject = null; // 로컬 비디오 화면 초기화
       }
-  
+
       // 3. Remote 비디오 화면 초기화
       // if (remoteVideoRef.current?.srcObject) {
       //   const remoteStream = remoteVideoRef.current.srcObject as MediaStream;
       //   remoteStream.getTracks().forEach((track) => track.stop());
       //   remoteVideoRef.current.srcObject = null;
       // }
-  
+
       // 4. Signaling 서버에 방송 중지 알림
       socket.emit('stop-streaming'); // 서버에서 필요한 처리가 있다면 구현
 
@@ -118,10 +121,10 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
       await peerConnection.current?.addIceCandidate(candidate);
     });
 
-    if(isBroadcastMode){
-      if(isMyStreaming){
+    if (isBroadcastMode) {
+      if (isMyStreaming) {
         startScreenStreaming();
-      }else{
+      } else {
         stopScreenStreaming();
       }
     }
@@ -139,10 +142,39 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
   // TODO: 네이버 치지직은 현재 영상 API 제공하지 않음, 제공시 구현 필요 
   if (streamType === 'CHZZK') {
     return (
-      <div className='row-start-3'>
+      <div className=' w-full h-full'>
         <span className="block text-center text-red-500">치지직은 현재 스트리밍 API가 없어서 영상을 제공할 수 없습니다.</span>
         <span className="block text-center text-red-300">(API 제공 시 구현 예정)</span>
       </div>
+    )
+  }
+
+  if (streamType === 'TWITCH') {
+    return (
+      <div className='w-full h-full'>
+
+        {/* Twitch Video Embed */}
+        <div>
+          <iframe
+            src={`https://player.twitch.tv/?channel=${nowStreamer?.name}&parent=${window.location.hostname}`}
+            height="950"
+            width="100%"
+            allowFullScreen={true}
+            // className="rounded-lg"
+          ></iframe>
+        </div>
+        {/* Twitch Chat Embed */}
+        {/* <div className="w-full max-w-4xl mt-4">
+            <iframe
+              src={`https://www.twitch.tv/embed/${nowStreamer?.name}/chat?parent=localhost`}
+              height="400"
+              width="100%"
+              frameBorder="0"
+              className="rounded-lg"
+            ></iframe>
+          </div> */}
+      </div>
+
     )
   }
 
@@ -170,7 +202,11 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
     return <ReactPlayer url={streamUrl} controls width="100%" height="auto" />;
   }
 
-  return <p className="text-gray-500">현재 방송기능을 이용할 수 없습니다...</p>;
+  return (
+    <div className='row-start-3'>
+      <span className="block text-center text-red-500">현재 구현중이거나 방송에 문제가 있습니다.</span>
+    </div>
+  )
 };
 
 export default StreamPlayer;

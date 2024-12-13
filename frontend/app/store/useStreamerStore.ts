@@ -11,10 +11,18 @@ type Streamer = {
     streamType: string;
 };
 
+enum StreamPlatforms {
+    chzzk = '치지직',
+    youtube = '유튜브',
+    twitch = '트위치'
+}
+
 // 스토어 상태와 동작 정의
 interface StreamerStore {
     streamers: Streamer[]; // 스트리머 리스트
     nowStreamer : Streamer | null; // 현재 보고있는 스트리머
+    nowPlatform : StreamPlatforms; // 현재 플렛폼
+    setNowPlatform: (streamer: StreamPlatforms) => void; // 기본 스트리머(fetchStreamers 로 대체 필요)
     fetchStreamers: () => Promise<void>; // API 호출
     addStreamer: (streamer: Streamer[]) => void; // 스트리머 추가
     setStreamer: (streamer: Streamer[]) => void; // 기본 스트리머(fetchStreamers 로 대체 필요)
@@ -31,6 +39,13 @@ const useStreamerStore = create<StreamerStore>((set, get) => ({
     streamers: [],
     nowStreamer: null,
     isMyStreming: false,
+    nowPlatform : StreamPlatforms.chzzk,
+
+    setNowPlatform:(params: StreamPlatforms) =>{
+        set(() => ({
+            nowPlatform: params,
+        }));
+    },
 
     setNowStreamer: (params: Streamer) => {
         set(() => ({

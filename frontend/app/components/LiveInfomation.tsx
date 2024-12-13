@@ -23,7 +23,7 @@ const LiveInfomation: React.FC<LiveInfomationProps> = ({ streamerName }) => {
     if (!nowStreamer) return <></>
     return (
 
-        <div className="row-start-5  bg-gray-800   w-full h-full ">
+        <div className="w-full h-64 bg-gray-800">
             {/* 스트리머 아이콘 */}
             <Image
                 className="w-16 h-16 rounded-full mr-4"

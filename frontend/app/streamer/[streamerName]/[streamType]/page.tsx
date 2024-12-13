@@ -27,9 +27,9 @@ const StreamerPage: React.FC = () => {
     return (
         <Layout>
             {/* 가운데 메인 콘텐츠: 플레이어 */}
-            <div className="grid grid-rows-5 justify-stretch justify-center items-center h-full w-full">
+            <div className="flex flex-col justify-between items-center h-full w-full">
                 <StreamPlayer streamUrl={""} streamType={params.streamType} />
-                <LiveInfomation streamerName={streamerName}/>
+                <LiveInfomation streamerName={streamerName} />
             </div>
 
             {/* 오른쪽 채팅 영역 */}

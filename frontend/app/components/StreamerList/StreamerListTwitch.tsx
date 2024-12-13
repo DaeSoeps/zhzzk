@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image, { StaticImageData } from 'next/image';
 import useStreamerStore from '../../store/useStreamerStore';
 import { useBroadCastStore } from '../../store/useBroadCastStore';
-import { addStreamer, getStreamers } from '../../firebase/firebaseActions';
+import api from '@/app/utils/api';
 
 interface Streamer {
   id: string;
@@ -28,49 +28,56 @@ const StreamerList: React.FC = () => {
   } = useStreamerStore();
   const { setIsMyStreaming } = useBroadCastStore();
 
-  // 스트리머 Dummy 데이터 생성 함수
-  const generateStreamers = (count: number): Streamer[] => {
+  const getTwitchStreamerInfo = async () => {
     const utils = new util();
-    const uniqueImages = utils.getUniqueImages(count); // 중복 없는 이미지 배열 가져오기
-    const uniqueStreamers = utils.getUniqueName(count);
-    return Array.from({ length: count }, (_, index) => ({
-      id: index.toString(),
-      name: uniqueStreamers[index],
-      icon: uniqueImages[index], // 중복 없이
-      viewers: utils.getRandomNumber(100, 10000), // 100 ~ 10,000 랜덤 시청자 수
-      game: utils.getRandomGame(),
-      streamType: utils.getRandomStreamType(),
-    }));
-  };
-
-  // API 호출 함수
-  const fetchStreamer = () => {
+    const uniqueImages = utils.getUniqueImages(7); // 중복 없는 이미지 배열 가져오기
     try {
-      const fetchStreamers = async () => {
-        // Firebase에서 스트리머 목록 가져오기
-        const data = await getStreamers();
-        if (data.length === 0 && streamers.length === 0) {
-          // 데이터가 없으면 기본 스트리머 추가
-          addStreamer(generateStreamers(7)) //fb 스토리지에 저장
-          setStreamer(generateStreamers(7));
-        } else {
-          // 데이터가 있으면 상태에 저장
-          setStreamer(data);
-        }
-      };
 
-      fetchStreamers();
-    } catch (error) {
-      setError(`스트리머 정보를 불러오는 데 실패했습니다. ${error}`);
-    } finally {
+      const sts: Streamer[] = [];
+      // const stName = ["Zizaran","Quin69","wudijo"];
+      // 트위치에서는 배열로 스트리머 정보를 받을 수 있는데, 서버에서 처리해야함.
+      const getAPI = await api.get(`/twitch/streamer`);
+      
+      if (getAPI.status === 200) {
+        const data = getAPI.data;
+        data.map((v : any, i : number)=>{
+          sts.push(
+            {
+              id: v.game_id,
+              name: v.user_name,
+              icon: uniqueImages[i],
+              viewers: v.viewer_count,
+              game: v.game_name,
+              streamType: "TWITCH"
+            }
+          )
+        })
+      }
+
+      console.log("TWITCH : ", getAPI)
+      console.log("sts : ", sts)
+
+      setStreamer(sts)
       setLoading(false);
+
+    } catch (error: any) {
+      if (error.response) {
+        // 서버에서 반환한 에러 메시지 처리
+        alert(error.response.data.message || '트위치 정보 가져오기 실패했습니다.');
+      } else {
+        // 네트워크 에러 또는 기타 에러 처리
+        alert('서버와 통신에 실패했습니다.');
+        setError("서버와 통신에 실패했습니다.")
+      }
     }
-  };
+  }
 
   useEffect(() => {
-    fetchStreamer();
+    // fetchStreamer();
+    setStreamer([])
+    getTwitchStreamerInfo();
 
-  },[]);
+  }, []);
 
 
   const handleStreamerClick = (streamer: Streamer) => {
@@ -78,7 +85,7 @@ const StreamerList: React.FC = () => {
     if (streamer.streamType === 'broadcast') return router.push(`/broadcast`); // 방송중인 사람이면 브로드캐스트로 이동
     streamer && setNowStreamer(streamer);
     if (streamer) {
-      if(nowStreamer){
+      if (nowStreamer) {
         if (nowStreamer.name === streamer.name) return; // 현재스트리머일때 로직타지않기
       }
       setIsMyStreaming(false); // 내가방송하기 해체
