@@ -135,6 +135,7 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
     };
   }, [isMyStreaming]);
 
+  // 개인방송모드(*WEB RTC)
   if (isBroadcastMode && videoRef.current) {
     return <video ref={videoRef} autoPlay playsInline muted className="w-full h-auto rounded-md" />;
   }
@@ -151,16 +152,17 @@ const StreamPlayer: React.FC<StreamPlayerProps> = ({ isBroadcastMode, streamUrl,
 
   if (streamType === 'TWITCH') {
     return (
-      <div className='w-full h-full'>
+      <div className='relative  w-full h-full'>
 
         {/* Twitch Video Embed */}
         <div>
           <iframe
             src={`https://player.twitch.tv/?channel=${nowStreamer?.name}&parent=${window.location.hostname}`}
-            height="950"
+            height="100%"
             width="100%"
             allowFullScreen={true}
             // className="rounded-lg"
+            className="absolute top-0 left-0 w-full h-full"
           ></iframe>
         </div>
         {/* Twitch Chat Embed */}
