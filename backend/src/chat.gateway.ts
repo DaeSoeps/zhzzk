@@ -43,29 +43,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   handleRequestChatData(client: Socket, data: { streamerName: string }) {
     const { streamerName } = data;
     this.logger.log(`Chat data requested for streamer: ${streamerName}`);
-    // const chzzk = new ChzzkChatService(streamerName);
-    // const chatData =  chzzk.getChatMessages;
-
-    // // 클라이언트에게 실시간 데이터 전송
-    // client.emit('receiveChatData', { chatData });
-
-    // 이미 생성된 ChzzkChatService가 있으면 재사용
-    // if (this.chatServices.has(streamerName)) {}
-
 
     // 클라이언트와 스트리머 매핑 저장
     this.clientToStreamerMap.set(client.id, streamerName);
 
-    // const chzzkChatService = new ChzzkChatService(streamerName);
-    // this.chatServices.set(streamerName, chzzkChatService);
-
-    // // 새로운 메시지 발생 시 클라이언트에 전송
-    // chzzkChatService.on('newMessage', (message) => {
-    //   this.server.to(client.id).emit('receiveChatData', { chatData: message });
-    // });
-
     // 이미 생성된 ChzzkChatService가 있으면 재사용
-
     // if (!this.chatServices.has(streamerName)) {
     if (true) {
       this.logger.log(`신규 추가 streamer: ${streamerName}`);
