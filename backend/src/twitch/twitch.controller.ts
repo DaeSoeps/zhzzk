@@ -9,7 +9,7 @@ export class TwitchController {
   // async getStreamerInfo(@Query('name') streamerName: string) 
   // => 단일로 불러올땐 이렇게 해야함.
   async getStreamerInfo() {
-    const streamerNames = ["Zizaran","Quin69","wudijo"];
+    const streamerNames = ["Zizaran","Quin69","wudijo","LVNDMARK","우기잉"];
     return await this.twitchService.getStreamerInfo(streamerNames);
   }
 }
